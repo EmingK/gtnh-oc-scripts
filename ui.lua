@@ -1,4 +1,5 @@
 local term = require('term')
+local computer = require('computer')
 local unicode = require('unicode')
 
 local version = require('version')
@@ -159,7 +160,8 @@ function ui.setup(reactors)
   local title = TitleBar:new(1, 1, screen_w, TITLE_HEIGHT)
   add_ui_element(title)
 
-  local button_rows = math.ceil(screen_w / BUTTON_WIDTH)
+  local button_cols = math.ceil(screen_w / BUTTON_WIDTH)
+  local button_rows = math.ceil(BUTTON_COUNT / button_cols)
   local available_rows = screen_h - TITLE_HEIGHT - button_rows
 
   local panel_cols = 1
@@ -178,10 +180,10 @@ function ui.setup(reactors)
 
   local button_index = 0
   function add_button(shortcut, text)
-    local offset_x = button_index % button_rows
-    local offset_y = button_index // button_rows
+    local offset_x = button_index % button_cols
+    local offset_y = button_index // button_cols
 
-    local button = Button:new(1 + offset_x * BUTTON_WIDTH, screen_h - button_rows +  offset_y, BUTTON_WIDTH, 1, shortcut, text)
+    local button = Button:new(1 + offset_x * BUTTON_WIDTH, screen_h - button_rows + offset_y, BUTTON_WIDTH, 1, shortcut, text)
     add_ui_element(button)
     button_index = button_index + 1
   end
@@ -202,6 +204,8 @@ function ui.update(cmd)
     end
     e:draw()
   end
+  term.setCursor(1, screen_h)
+  term.write("Mem: " .. tostring(computer.totalMemory()) .. ", " .. tostring(computer.freeMemory()) .. " free")
 end
 
 return ui
