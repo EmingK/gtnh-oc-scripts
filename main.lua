@@ -35,23 +35,7 @@ end
 
 local function ui_loop()
   ui.setup(reactors)
-  while reactors_running() do
-    local a, dev, ch = event.pull(0.5, "key_down")
-
-    local cmd
-    if ch then
-      cmd = string.char(ch):upper()
-
-      if cmd == "S" then
-        global_control.set_pause(false)
-      elseif cmd == "P" then
-        global_control.set_pause(true)
-      elseif cmd == "X" then
-        global_control.shutdown()
-      end
-    end
-    ui.update(cmd)
-  end
+  ui.loop(reactors_running)
 end
 
 local function start()
