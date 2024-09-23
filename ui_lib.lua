@@ -26,6 +26,10 @@ function UIElement:draw()
   error("Override me")
 end
 
+function UIElement:clear()
+  term.gpu().fill(self.rect.x, self.rect.y, self.rect.w, self.rect.h, ' ')
+end
+
 function UIElement:update()
 end
 
@@ -117,6 +121,7 @@ function Label:init(text)
 end
 
 function Label:draw()
+  self:clear()
   self:move_cursor(0, 0)
   term.write(self.text)
 end
@@ -144,7 +149,7 @@ function Button:draw()
     gpu.setForeground(bg)
   end
 
-  gpu.fill(self.rect.x, self.rect.y, self.rect.w, self.rect.h, ' ')
+  self:clear()
   self:move_cursor(0, 0)
   term.write(self.text)
 
