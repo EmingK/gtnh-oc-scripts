@@ -95,7 +95,7 @@ function MonitorWindow:onLoad()
   for i, cfg in ipairs(rawConfig.instances) do
     local instance = config.instantiate(cfg)
     local rc = Chamber:new(instance)
-    rc:attachTo(self.runloop)
+    rc:attachTo(self.app.runloop)
     reactors[i] = rc
   end
   self.reactors = reactors

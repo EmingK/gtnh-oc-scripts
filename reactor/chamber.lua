@@ -87,9 +87,9 @@ function ReactorChamber:check()
   -- check temp
   self:checkTemperature()
   if self.delegate then
-    self.delegate:update()
+    self.delegate:onReactorUpdate(self)
   end
-  
+
   if self.error then
     debugLog('rc: checkTemp error', self.error)
     self.running = false
@@ -267,7 +267,7 @@ function ReactorChamber:applyProfile()
       end
 
       if self.delegate then
-        self.delegate:onReactorUpdate()
+        self.delegate:onReactorUpdate(self)
       end
 
       self.rl:enqueueScheduled(self.rlName, 0, utils.bind(self.check, self))
