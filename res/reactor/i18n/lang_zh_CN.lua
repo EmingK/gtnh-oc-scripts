@@ -1,0 +1,49 @@
+--[[
+  Copyright (c) 2025 Eming Kwok
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+]]
+
+return {
+  usage = '用法: reactor [指令] [选项...]\n\n可用指令:\n\tsetup\t配置本程序与反应堆实例.\n\trun\t[默认指令]运行反应堆.\n\thelp\t显示本说明.\n可用选项:\n\t--config=<路径> 使用指定的配置文件.\n\t--debug         关闭图形界面并打印调试日志.',
+  invalid_command = '不支持的指令: %s',
+  no_valid_config = '本地配置文件无法运行反应堆.\n按任意键启动配置程序...',
+  language = '语言',
+  title_config_app = '反应堆监控程序 版本%s - 配置',
+  tab_general = '通用',
+  tab_schemas = '元件布局',
+  tab_reactors = '反应堆',
+  tab_save = '保存配置',
+  title_monitor_app = '反应堆监控程序 版本%s - 运行',
+  no_profile = '缺少预置 %s',
+  profile_count_mismatch = '反应堆容量不足,无法应用布局',
+  output_full = '物品输出容器已满',
+  item_shortage = '缺少物品 %s',
+  global_control = '全局控制',
+  none = '无',
+  sync_shutdown = '同步停堆',
+  enabled = '启用',
+  disabled = '禁用',
+  schema_name_vacuum = '强冷',
+  schema_name_single = '单个元件',
+  item_name_u1 = '燃料棒（铀）',
+  item_name_u2 = '二联燃料棒（铀）',
+  item_name_u4 = '四联燃料棒（铀）',
+  item_name_th1 = '燃料棒（钍）',
+  item_name_th2 = '二联燃料棒（钍）',
+  item_name_th4 = '四联燃料棒（钍）',
+  item_name_mox1 = '燃料棒（MOX）',
+  item_name_mox2 = '二联燃料棒（MOX）',
+  item_name_mox4 = '四联燃料棒（MOX）',
+  item_name_nq1 = '燃料棒（硅岩）',
+  item_name_nq2 = '二联燃料棒（硅岩）',
+  item_name_nq4 = '四联燃料棒（硅岩）',
+  item_name_he60 = '60K氦冷却单元',
+  item_name_he180 = '180K氦冷却单元',
+  item_name_he360 = '360K氦冷却单元',
+  item_name_nak60 = '60K钠钾冷却单元',
+  item_name_nak180 = '180K钠钾冷却单元',
+  item_name_nak360 = '360K钠钾冷却单元',
+  item_name_reactorVent = '反应堆散热片',
+}

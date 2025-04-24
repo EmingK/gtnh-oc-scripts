@@ -1,24 +1,29 @@
-> WARNING: Under development
-> 
-> The code is not fine tested for extreme situations in real game.
+English | [中文](README_zh.md)
 
-This is an [OpenComputers] program for nuclear reactor controlling for the [GT:NH] minecraft modpack.
+# GT:NH OC Scripts
+
+This is a collection of [OpenComputers] program for various automatic control for the [GT:NH] minecraft modpack.
+
+# Roadmap
+
+- [x] [Nuclear reactor](reactor/)
+- [ ] Touch screen support
+- [ ] Purified water line
+- [ ] Eye of harmony
 
 # Usage
 
-## Component requirements
+Download bundled scripts via releases.
 
-- The reactor itself
-- An adapter to read status of the reactor
-- A transposer to move items
-- Redstone I/O ports. Need at least one for reactor control, and optional ones to receive updates from energy storage or other sources.
+# Development
 
-## Setup
+The project is splitted into multiple modules to reuse common functions within different scripts. For each
+application, a bundled script is built to be run inside the game actually.
 
-1. Set up a basic OpenComputers system. Use higher tier CPUs if you want to control more reactors.
-2. Put contents of this repo to the home directory of your save.
-3. Edit `config.lua` and update device addresses of your components.
-4. Copy paset to add more reactors to the config
+See more in [Development](Development.md).
+
+This project is opensourced under MIT license. You can also use modules from this repository to make your
+own OC application for other projects.
 
 [OpenComputers]: https://oc.cil.li/
 [GT:NH]: https://github.com/GTNewHorizons/GT-New-Horizons-Modpack
