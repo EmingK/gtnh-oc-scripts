@@ -10,6 +10,11 @@ local curses = require('curses')
 
 local gpu = {}
 
+function gpu.getResolution()
+  local h, w = inner.scr:getmaxyx()
+  return w, h
+end
+
 function gpu.fill(x, y, w, h, c)
   local cc = c or ' '
   for dy = 0, h - 1 do
@@ -63,6 +68,8 @@ function gpu.bitblt(dst, col, row, width, height, src, fromCol, fromRow)
   if src == 0 then
     src = inner.scr
   end
+  fromCol = fromCol or 1
+  fromRow = fromRow or 1
 
   src:copywin(dst, fromRow - 1, fromCol - 1, row - 1, col - 1, row + height - 1, col + width - 1, true)
 end
