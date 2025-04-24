@@ -60,13 +60,17 @@ function Window:present(aWindow, resultHandler)
   local bg = gpu.allocateBuffer(w, h)
   gpu.bitblt(bg, 1, 1, w, h, 0)
 
+  self.presentedWindow = aWindow
   self.app:present(
     aWindow,
     function(result)
+      self.presentedWindow = nil
       gpu.bitblt(0, 1, 1, w, h, bg)
       gpu.freeBuffer(bg)
-      self.app:enqueueUpdate()
-      resultHandler(result)
+      self.ui:setNeedUpdate()
+      if resultHandler then
+        resultHandler(result)
+      end
     end
   )
 end

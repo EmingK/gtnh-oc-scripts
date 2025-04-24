@@ -25,9 +25,12 @@ local borders = {
 
 local Frame = class(Container)
 
-function Frame:init(super, title)
+function Frame:init(super, title, content)
   super.init()
   self.title = title
+  if content then
+    self:addSubview(content)
+  end
 end
 
 function Frame:draw(gpu)
