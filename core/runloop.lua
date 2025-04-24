@@ -81,13 +81,13 @@ function Runloop:addEventHandler(handler)
 end
 
 function Runloop:enqueueScheduled(name, target, fn)
-  local insertPoint = #self.tq + 1
+  local idx = #self.tq
 
-  while insertPoint > 1 do
-    if self.tq[insertPoint].target <= target then
+  while idx > 0 do
+    if self.tq[idx].target <= target then
       break
     end
-    insertPoint = insertPoint - 1
+    idx = idx - 1
   end
 
   local task = {
@@ -95,7 +95,7 @@ function Runloop:enqueueScheduled(name, target, fn)
     run = fn,
     target = target
   }
-  table.insert(self.tq, insertPoint, task)
+  table.insert(self.tq, idx + 1, task)
 end
 
 function Runloop:enqueueIdle(name, fn)
