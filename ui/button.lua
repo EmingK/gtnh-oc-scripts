@@ -7,6 +7,7 @@
 
 local class = require('core.class')
 local wrap = require('ui.wrap_class')
+local uiUtils = require('ui.utils')
 local UIElement = require('ui.element').class
 
 local term = palRequire('term')
@@ -21,25 +22,16 @@ function Button:init(super, text)
 end
 
 function Button:draw(gpu)
-  local bg = gpu.getBackground()
-  local fg = gpu.getForeground()
-  if self.active then
-    gpu.setBackground(fg)
-    gpu.setForeground(bg)
+  if self.selected then
+    uiUtils.setHighlight(gpu)
   end
 
   self:clear(gpu)
   local x, y = self:screenPos(0, 0)
   gpu.set(x, y, self.text)
 
-  gpu.setBackground(bg)
-  gpu.setForeground(fg)
-end
-
-function Button:setActive(a)
-  if self.active ~= a then
-    self.active = a
-    self:setNeedUpdate()
+  if self.selected then
+    uiUtils.setNormal(gpu)
   end
 end
 
