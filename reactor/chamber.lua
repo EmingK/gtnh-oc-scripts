@@ -269,9 +269,9 @@ function ReactorChamber:applyProfile()
       if self.delegate then
         self.delegate:onReactorUpdate(self)
       end
-
-      self.rl:enqueueScheduled(self.rlName, 0, utils.bind(self.check, self))
     end
+
+    self.rl:enqueueScheduled(self.rlName, 0, utils.bind(self.check, self))
   end
 
   self.rl:enqueueIdleYieldable(self.rlName, doProfile)

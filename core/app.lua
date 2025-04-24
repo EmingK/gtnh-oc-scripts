@@ -35,6 +35,10 @@ function App:start(window)
   self.runloop:addEventHandler(self)
   if not self.options.debug and self.window then
     self:present(window, utils.bind(self.stop, self))
+  else --for debug
+    window.app = self
+    window.dismissHandler = utils.bind(self.stop, self)
+    window:onLoad()
   end
   self.runloop:run()
 end
