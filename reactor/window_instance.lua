@@ -16,6 +16,8 @@ local Button = require('ui.button')
 local Table = require('ui.table')
 local Separator = require('ui.separator')
 local Select = require('ui.window_select')
+local InputWindow = require('ui.window_input')
+local RedstoneWindow = require('reactor.window_redstone')
 require('reactor.window+select_component')
 
 local InstanceWindow = class(Window)
@@ -103,7 +105,16 @@ function InstanceWindow:makeTableContents()
 end
 
 function InstanceWindow:editName()
-  -- TODO
+  local win = InputWindow:new(_T('instance_name'), _T('input_prompt_instance_name'))
+  self:present(
+    win,
+    function(result)
+      self.config.name = result
+      self:makeTableContents()
+      self.list.contents = self.tableContents
+      self.list:reload()
+    end
+  )
 end
 
 function InstanceWindow:editEnabled()
@@ -124,11 +135,29 @@ function InstanceWindow:editEnabled()
 end
 
 function InstanceWindow:editMaxHeat()
-  -- TODO
+  local win = InputWindow:new(_T('max_heat'), _T('input_prompt_max_heat'))
+  self:present(
+    win,
+    function(result)
+      self.config.heat_max = tonumber(result)
+      self:makeTableContents()
+      self.list.contents = self.tableContents
+      self.list:reload()
+    end
+  )
 end
 
 function InstanceWindow:editMinHeat()
-  -- TODO
+  local win = InputWindow:new(_T('min_heat'), _T('input_prompt_min_heat'))
+  self:present(
+    win,
+    function(result)
+      self.config.heat_min = tonumber(result)
+      self:makeTableContents()
+      self.list.contents = self.tableContents
+      self.list:reload()
+    end
+  )
 end
 
 function InstanceWindow:editReactorAddress()
@@ -148,7 +177,16 @@ function InstanceWindow:editTransposer()
 end
 
 function InstanceWindow:editRedstone()
-  -- TODO
+  local rs = self.config.components.redstone
+  local win = RedstoneWindow:new(rs)
+  self:present(
+    win,
+    function(editOk, newConfig)
+      if editOk then
+        self.config.components.redstone = newConfig
+      end
+    end
+  )
 end
 
 function InstanceWindow:editProfileWorking()

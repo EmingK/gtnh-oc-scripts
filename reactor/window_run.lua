@@ -118,7 +118,7 @@ end
 
 -- Event handlers
 
-function MonitorWindow:on_key_up(device, key, keycode)
+function MonitorWindow:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.x then
     self:stopReactors()
     self:dismiss()

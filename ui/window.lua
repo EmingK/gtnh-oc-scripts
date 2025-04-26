@@ -113,7 +113,7 @@ function Window:initSelection()
   end
 end
 
-function Window:on_key_up(device, key, keycode)
+function Window:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.enter and self.selectedElement then
     local actionParams = table.pack(self.selectedElement:getAction())
     if #actionParams >= 1 then

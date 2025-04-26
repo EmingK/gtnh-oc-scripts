@@ -38,6 +38,8 @@ function event.pull(...)
     local key = curses.scr:getch()
     if key then
       -- TODO: key name
+      local keydown = { 'key_down', nil, key, key }
+      table.insert(eventQueue, keydown)
       local keyup = { 'key_up', nil, key, key }
       table.insert(eventQueue, keyup)
     end

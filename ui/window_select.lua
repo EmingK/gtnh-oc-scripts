@@ -51,11 +51,11 @@ function Select:onLoad()
   self.preferredSize = { w = maxWidth + 2, h = #self.options + 2 }
 end
 
-function Select:on_key_up(device, key, keycode)
+function Select:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.enter then
     self:dismiss(self.main.selectedRow)
   else
-    Window.on_key_up(self, device, key, keycode)
+    Window.on_key_down(self, device, key, keycode)
   end
 end
 

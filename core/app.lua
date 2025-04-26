@@ -52,6 +52,7 @@ function App:present(window, handler)
   self.runloop:enqueueIdle(
     'App_UI',
     function()
+      window.dismissHandler = handler
       window:onLoad()
       -- layout
       local w, h, x, y = term.getViewport()
@@ -67,7 +68,6 @@ function App:present(window, handler)
       window.ui:layout()
       window.ui:moveToWindow(window)
       window:initSelection()
-      window.dismissHandler = handler
       window.ui:setNeedUpdate()
     end
   )

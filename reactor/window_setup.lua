@@ -188,7 +188,7 @@ function SetupWindow:buildUI()
   }
 end
 
-function SetupWindow:on_key_up(device, key, keycode)
+function SetupWindow:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.x then
     self:dismiss()
   -- elseif keycode == keyboard.keys.enter then
@@ -196,7 +196,7 @@ function SetupWindow:on_key_up(device, key, keycode)
   --   local win = RedstoneWindow:new(rs)
   --   self:present(win)
   else
-    Window.on_key_up(self, device, key, keycode)
+    Window.on_key_down(self, device, key, keycode)
   end
 end
 

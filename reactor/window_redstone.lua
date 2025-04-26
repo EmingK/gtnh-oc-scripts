@@ -84,7 +84,7 @@ function RedstoneWindow:makeTableContents()
   if self.config.mode == 'bundled' then
     table.insert(tableContents, {
       { display = _T('redstone_color') },
-      { display = _T(utils.colorDescription(self.config.side)) or _T('not_configured'), action = 'editRedstoneColor' }
+      { display = _T(utils.colorDescription(self.config.color)) or _T('not_configured'), action = 'editRedstoneColor' }
     })
     self.tableCfg.rows.n = 4
   else

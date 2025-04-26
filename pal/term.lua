@@ -41,8 +41,10 @@ return {
     curses.scr:clrtoeol()
   end,
 
-  -- not impl
-  -- read,
+  read = function()
+    -- FIXME: not work :(
+    return curses.scr:getstr()
+  end,
 
   -- TODO: support no line wrap
   write = function(s)
