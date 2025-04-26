@@ -32,8 +32,8 @@ local Tabs = require('ui.tabs')
 local Table = require('ui.table')
 
 local appVersion = require('reactor.version')
-
-local config = nil
+local config = require('reactor.config')
+local RedstoneWindow = require('reactor.window_redstone')
 
 local function buildGeneralTab()
   local tableContents = {
@@ -142,6 +142,8 @@ end
 local SetupWindow = class(Window)
 
 function SetupWindow:onLoad()
+  self.config = config.get()
+
   term.clear()
   local w, h, x, y = term.getViewport()
 
@@ -158,6 +160,10 @@ end
 function SetupWindow:on_key_up(device, key, keycode)
   if keycode == keyboard.keys.x then
     self:dismiss()
+  elseif keycode == keyboard.keys.enter then
+    local rs = self.config.instances[1].components.redstone
+    local win = RedstoneWindow:new(rs)
+    self:present(win)
   else
     Window.on_key_up(self, device, key, keycode)
   end

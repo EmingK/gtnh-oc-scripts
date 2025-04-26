@@ -90,6 +90,14 @@ function Table:init(super, contents, config)
   self:calculatePositions()
 end
 
+--[[
+  Notify that the table has changed its data and layout.
+]]
+function Table:reload()
+  self:calculatePositions()
+  self:setNeedUpdate()
+end
+
 function Table:initSelection(navFrom)
   -- TODO: handle navFrom
   -- TODO: handle config selectable
@@ -135,6 +143,14 @@ function Table:handleNavigation(nav)
     self:setNeedUpdate()
   end
   return next
+end
+
+function Table:selectedContent()
+  if self.selectedRow and self.selectedColumn then
+    local row = self.contents[self.selectedRow]
+    return row and row[self.selectedColumn]
+  end
+  return nil
 end
 
 function Table:draw(gpu)

@@ -7,6 +7,7 @@
 
 local serialization = palRequire('serialization')
 local computer = palRequire('computer')
+local colors = palRequire('colors')
 
 local function debugLog(...)
   local up = computer.uptime()
@@ -43,9 +44,23 @@ local function bind(f, ...)
   end
 end
 
+local sideNames = {
+  'up', 'north', 'south', 'west', 'east', [0] = 'down'
+}
+
+local function sideDescription(side)
+  return sideNames[side]
+end
+
+local function colorDescription(color)
+  return colors[color]
+end
+
 return {
   loadSerializedObject = loadSerializedObject,
   saveSerializedObject = saveSerializedObject,
+  sideDescription = sideDescription,
+  colorDescription = colorDescription,
   bind = bind,
   debug = debugLog,
 }
