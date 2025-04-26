@@ -63,13 +63,13 @@ function Window:present(aWindow, resultHandler)
   self.presentedWindow = aWindow
   self.app:present(
     aWindow,
-    function(result)
+    function(...)
       self.presentedWindow = nil
       gpu.bitblt(0, 1, 1, w, h, bg)
       gpu.freeBuffer(bg)
       self.ui:setNeedUpdate()
       if resultHandler then
-        resultHandler(result)
+        resultHandler(...)
       end
     end
   )
@@ -78,9 +78,9 @@ end
 --[[
   Dismiss the current window.
 ]]
-function Window:dismiss(result)
+function Window:dismiss(...)
   if self.dismissHandler then
-    self.dismissHandler(result)
+    self.dismissHandler(...)
   end
 end
 
@@ -114,6 +114,17 @@ function Window:initSelection()
 end
 
 function Window:on_key_up(device, key, keycode)
+  if keycode == keyboard.keys.enter and self.selectedElement then
+    local actionParams = table.pack(self.selectedElement:getAction())
+    if #actionParams >= 1 then
+      local action = table.remove(actionParams, 1)
+      if self[action] then
+        self[action](self, table.unpack(actionParams))
+        return
+      end
+    end
+  end
+
   local navigation = nil
   if keycode == keyboard.keys.up then
     navigation = Navigation.up

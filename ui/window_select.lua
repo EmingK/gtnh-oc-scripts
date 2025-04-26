@@ -6,6 +6,7 @@
 ]]
 
 local keyboard = palRequire('keyboard')
+local unicode = palRequire('unicode')
 
 local class = require('core.class')
 
@@ -22,12 +23,17 @@ function Select:init(super, title, options)
 end
 
 function Select:onLoad()
+  local maxWidth = 0
+  for _, option in ipairs(self.options) do
+    maxWidth = math.max(maxWidth, unicode.wlen(option))
+  end
+
   local tableContents = self:makeTableContents()
   local tableCfg = {
     showBorders = false,
     columns = {
       n = 1,
-      defaultWidth = 20
+      defaultWidth = maxWidth
     },
     rows = {
       n = #self.options
@@ -42,14 +48,11 @@ function Select:onLoad()
     main
   )
 
-  -- TODO: auto size
-  self.ui.rect = { x = 10, y = 10, w = 50, h = 7 }
-  self.ui:layout()
+  self.preferredSize = { w = maxWidth + 2, h = #self.options + 2 }
 end
 
 function Select:on_key_up(device, key, keycode)
   if keycode == keyboard.keys.enter then
-    -- TODO: ret value
     self:dismiss(self.main.selectedRow)
   else
     Window.on_key_up(self, device, key, keycode)

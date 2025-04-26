@@ -1,0 +1,174 @@
+--[[
+  Copyright (c) 2025 Eming Kwok
+
+  This source code is licensed under the MIT license found in the
+  LICENSE file in the root directory of this source tree.
+]]
+
+local class = require('core.class')
+local utils = require('core.utils')
+
+local Window = require('ui.window')
+local Column = require('ui.column')
+local Row = require('ui.row')
+local Frame = require('ui.frame')
+local Button = require('ui.button')
+local Table = require('ui.table')
+local Separator = require('ui.separator')
+local Select = require('ui.window_select')
+require('reactor.window+select_component')
+
+local InstanceWindow = class(Window)
+
+function InstanceWindow:init(super, config)
+  super.init()
+  self.config = utils.copy(config)
+
+  self.tableCfg = {
+    showBorders = false,
+    columns = {
+      n = 2,
+      defaultWidth = 20
+    },
+    rows = {
+      n = 1
+    }
+  }
+  self:makeTableContents()
+end
+
+function InstanceWindow:onLoad()
+  local list = Table(self.tableContents, self.tableCfg)
+  self.list = list
+
+  self.ui = Frame(
+    _T('instance_config'),
+    Column({
+      self.list,
+      Separator.horizontal(),
+      Row({
+        Button('OK'):action('clickedOk'),
+        Button('Cancel'):action('clickedCancel'),
+      }):size(nil, 1)
+    })
+  )
+
+  self.preferredSize = { w = 50, h = 14 }
+end
+
+function InstanceWindow:makeTableContents()
+  self.tableContents = {
+    {
+      { display = _T('name') },
+      { display = self.config.name, action = 'editName' }
+    },
+    {
+      { display = _T('enabled') },
+      { display = _T(tostring(self.config.enabled)), action = 'editEnabled' }
+    },
+    {
+      { display = _T('max_heat_temp') },
+      { display = tostring(self.config.heat_max), action = 'editMaxHeat' }
+    },
+    {
+      { display = _T('min_heat_temp') },
+      { display = tostring(self.config.heat_min), action = 'editMinHeat' }
+    },
+    {
+      { display = _T('reactor_address') },
+      { display = self.config.components.reactor, action = 'editReactorAddress' }
+    },
+    {
+      { display = _T('transposer') },
+      { display = _T('edit'), action = 'editTransposer' }
+    },
+    {
+      { display = _T('redstone_control') },
+      { display = _T('edit'), action = 'editRedstone' }
+    },
+    {
+      { display = _T('profile_working') },
+      { display = _T('edit'), action = 'editProfileWorking' }
+    },
+    {
+      { display = _T('profile_heatup') },
+      { display = _T('edit'), action = 'editProfileHeatup' }
+    },
+    {
+      { display = _T('profile_cooldown') },
+      { display = _T('edit'), action = 'editProfileCooldown' }
+    },
+  }
+  self.tableCfg.rows.n = #self.tableContents
+end
+
+function InstanceWindow:editName()
+  -- TODO
+end
+
+function InstanceWindow:editEnabled()
+  local selectEnabled = Select:new(_T('enabled'), {
+    _T('enabled'),
+    _T('disabled'),
+  })
+
+  self:present(
+    selectEnabled, 
+    function(result)
+      self.config.enabled = result == 1
+      self:makeTableContents()
+      self.list.contents = self.tableContents
+      self.list:reload()
+    end
+  )
+end
+
+function InstanceWindow:editMaxHeat()
+  -- TODO
+end
+
+function InstanceWindow:editMinHeat()
+  -- TODO
+end
+
+function InstanceWindow:editReactorAddress()
+  self:selectComponent(
+    'reactor',
+    function(address)
+      self.config.components.reactor = address
+      self:makeTableContents()
+      self.list.contents = self.tableContents
+      self.list:reload()
+    end
+  )
+end
+
+function InstanceWindow:editTransposer()
+  -- TODO
+end
+
+function InstanceWindow:editRedstone()
+  -- TODO
+end
+
+function InstanceWindow:editProfileWorking()
+  -- TODO
+end
+
+function InstanceWindow:editProfileHeatup()
+  -- TODO
+end
+
+function InstanceWindow:editProfileCooldown()
+  -- TODO
+end
+
+function InstanceWindow:clickedOk()
+  self:dismiss(true, self.config)
+end
+
+function InstanceWindow:clickedCancel()
+  self:dismiss(false)
+end
+
+return InstanceWindow

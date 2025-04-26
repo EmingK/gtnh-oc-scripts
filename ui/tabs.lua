@@ -59,10 +59,14 @@ end
 
 function Tabs:selectTab(index)
   self.selectedTabIndex = index
+  local oldChild = self.children[2]
   local newChild = self.tabs[index][2]
+
   self.children[2] = newChild
   newChild.parent = self
   newChild:moveToWindow(self.window)
+  oldChild:moveToWindow(nil)
+  
   self:layout()
   self:setNeedUpdate()
 end

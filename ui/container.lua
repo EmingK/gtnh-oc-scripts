@@ -14,7 +14,12 @@ local Container = class(UIElement)
 function Container:init(super, children)
   super.init()
   self.selectionIndex = nil
-  self.children = children or {}
+  self.children = {}
+  if children then
+    for _, child in ipairs(children) do
+      self:addSubview(child)
+    end
+  end
 end
 
 function Container:addSubview(v)

@@ -44,6 +44,17 @@ local function bind(f, ...)
   end
 end
 
+local function copy(obj)
+  if type(obj) ~= 'table' then
+    return obj
+  end
+  local copied = {}
+  for k, v in pairs(obj) do
+    copied[k] = copy(v)
+  end
+  return copied
+end
+
 local sideNames = {
   'up', 'north', 'south', 'west', 'east', [0] = 'down'
 }
@@ -62,5 +73,6 @@ return {
   sideDescription = sideDescription,
   colorDescription = colorDescription,
   bind = bind,
+  copy = copy,
   debug = debugLog,
 }

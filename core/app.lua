@@ -53,6 +53,18 @@ function App:present(window, handler)
     'App_UI',
     function()
       window:onLoad()
+      -- layout
+      local w, h, x, y = term.getViewport()
+      if window.preferredSize then
+        local newW = math.min(w, window.preferredSize.w)
+        local newH = math.min(h, window.preferredSize.h)
+        local newX = (x + 1) + (w - newW) // 2
+        local newY = (y + 1) + (h - newH) // 2
+        window.ui.rect = {x = newX, y = newY, w = newW, h = newH }
+      else
+        window.ui.rect = { x = x + 1, y = y + 1, w = w, h = h }
+      end
+      window.ui:layout()
       window.ui:moveToWindow(window)
       window:initSelection()
       window.dismissHandler = handler

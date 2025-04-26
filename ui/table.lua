@@ -43,8 +43,8 @@ local symbols = {
     {
       -- Column
       {
-        -- The acutal value inside this cell
-        value: Any,
+        -- The action corresponding to this cell
+        action: String?,
         -- The display content of this cell
         display: String,
         -- Cell level selection control
@@ -153,7 +153,16 @@ function Table:selectedContent()
   return nil
 end
 
+function Table:getAction()
+  local selected = self:selectedContent()
+  if selected then
+    return selected.action, selected.value
+  end
+  return nil
+end
+
 function Table:draw(gpu)
+  self:clear(gpu)
   -- The whole painting area, include scroll bars.
   local w = self.rect.w
   local h = self.rect.h

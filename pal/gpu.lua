@@ -71,7 +71,8 @@ function gpu.bitblt(dst, col, row, width, height, src, fromCol, fromRow)
   fromCol = fromCol or 1
   fromRow = fromRow or 1
 
-  src:copywin(dst, fromRow - 1, fromCol - 1, row - 1, col - 1, row + height - 1, col + width - 1, true)
+  local success = src:copywin(dst, fromRow - 1, fromCol - 1, row - 1, col - 1, row + height - 2, col + width - 2, false)
+  return success
 end
 
 local emptyGpu = setmetatable({}, {

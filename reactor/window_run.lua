@@ -101,13 +101,6 @@ function MonitorWindow:onLoad()
   self.reactors = reactors
 
   term.clear()
-
-  local w, h, x, y = term.getViewport()
-  local root = buildUI(reactors).root
-
-  root.rect = { x = x + 1, y = y + 1, w = w, h = h }
-  root:layout()
-
   self.ui = root
 end
 

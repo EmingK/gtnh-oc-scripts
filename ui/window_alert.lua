@@ -5,8 +5,6 @@
   LICENSE file in the root directory of this source tree.
 ]]
 
-local keyboard = palRequire('keyboard')
-
 local class = require('core.class')
 
 local Window = require('ui.window')
@@ -32,10 +30,10 @@ function Alert:onLoad()
   local buttons = Row()
 
   if self.buttons & Alert.Ok == Alert.Ok then
-    buttons:addSubview(Button(_T('alert_ok')))
+    buttons:addSubview(Button(_T('alert_ok')):action('clickedOk'))
   end
   if self.buttons & Alert.Cancel == Alert.Cancel then
-    buttons:addSubview(Button(_T('alert_cancel')))
+    buttons:addSubview(Button(_T('alert_cancel')):action('clickedCancel'))
   end
 
   self.ui = Frame(self.title, Column({
@@ -43,16 +41,15 @@ function Alert:onLoad()
     buttons
   }))
 
-  -- TODO: auto size
-  self.ui.rect = { x = 10, y = 10, w = 50, h = 7 }
-  self.ui:layout()
+  self.preferredSize = { w = 50, h = 7 }
 end
 
-function Alert:on_key_up(device, key, keycode)
-  if keycode == keyboard.keys.enter then
-    -- TODO: ret value
-    self:dismiss(Alert.Ok)
-  end
+function Alert:clickedOk()
+  self:dismiss(Alert.Ok)
+end
+
+function Alert:clickedCancel()
+  self:dismiss(Alert.Cancel)
 end
 
 return Alert

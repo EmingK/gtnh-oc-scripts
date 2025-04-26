@@ -47,6 +47,11 @@ function UIElement:setSelected(state)
   end
 end
 
+function UIElement:action(a)
+  self._action = a
+  return self
+end
+
 -- MARK: - Painting
 
 --[[
@@ -74,7 +79,7 @@ end
   override this method to do partial updates.
 ]]
 function UIElement:update(gpu)
-  if self.needUpdate then
+  if self.window and self.needUpdate then
     self.needUpdate = false
     self:draw(gpu)
   end
@@ -152,6 +157,10 @@ function UIElement:elementAtPoint(x, y)
   else
     return nil
   end
+end
+
+function UIElement:getAction()
+  return self._action
 end
 
 -- MARK: - Reserved / unused
