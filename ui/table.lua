@@ -254,7 +254,7 @@ function Table:draw(gpu)
       if cellAvailableHeight > 0 then
         local row = self.contents[rowPaintIndex]
         local cell = row and row[columnPaintIndex]
-        local displayText = cell and cell.display or ''
+        local displayText = cell and cell.display or ' '
         if unicode.wlen(displayText) > availableWidth then
           displayText = unicode.wtrunc(displayText, availableWidth)
         end

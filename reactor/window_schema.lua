@@ -5,6 +5,8 @@
   LICENSE file in the root directory of this source tree.
 ]]
 
+local keyboard = palRequire('keyboard')
+
 local class = require('core.class')
 local utils = require('core.utils')
 
@@ -40,7 +42,7 @@ function SchemaWindow:init(super, config)
       n = 2,
       defaultWidth = 8,
       [2] = {
-        width = 10,
+        width = 16,
       }
     },
     rows = {
@@ -63,7 +65,7 @@ function SchemaWindow:init(super, config)
 end
 
 function SchemaWindow:onLoad()
-  local left = Table(self.tblCfgContents, self.tblCfgOptions):size(16)
+  local left = Table(self.tblCfgContents, self.tblCfgOptions):size(24)
   self.left = left
   local right = Table(self.tblLayoutContents, self.tblLayoutOptions)
   self.right = right
@@ -78,8 +80,8 @@ function SchemaWindow:onLoad()
       }),
       Separator.horizontal(),
       Row({
-        Button('OK'):action('clickedOk'),
-        Button('Cancel'):action('clickedCancel'),
+        Button(_T('ok')):action('clickedOk'),
+        Button(_T('cancel')):action('clickedCancel'),
       }):size(nil, 1)
     })
   )
@@ -180,10 +182,13 @@ function SchemaWindow:editTableInplace(char)
 end
 
 function SchemaWindow:on_key_down(device, key, keycode)
-  if (key >= 0x41 and key <= 0x5a) or (key >= 0x61 and key <= 0x7a) then
-    if self.selectedElement == self.right then
+  if self.selectedElement == self.right then
+    if (key >= 0x41 and key <= 0x5a) or (key >= 0x61 and key <= 0x7a) then
       -- Alphabet keys inside table
       self:editTableInplace(string.char(key):upper())
+      return
+    elseif keycode == keyboard.keys.back then
+      self:editTableInplace(nil)
       return
     end
   end

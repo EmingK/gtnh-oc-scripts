@@ -51,8 +51,8 @@ function InstanceWindow:onLoad()
       self.list,
       Separator.horizontal(),
       Row({
-        Button('OK'):action('clickedOk'),
-        Button('Cancel'):action('clickedCancel'),
+        Button(_T('ok')):action('clickedOk'),
+        Button(_T('cancel')):action('clickedCancel'),
       }):size(nil, 1)
     })
   )

@@ -139,6 +139,10 @@ function SetupWindow:calcSchemasTabContent()
     })
   end
 
+  table.insert(tableContents, {
+    { display = _T('create_new'), action = 'newSchema' }
+  })
+
   local tableCfg = {
     showBorders = false,
     rows = {
@@ -178,6 +182,10 @@ function SetupWindow:calcReactorsTabContent()
       { display = _T('delete'), action = 'deleteInstance', value = i },
     })
   end
+
+  table.insert(tableContents, {
+    { display = _T('create_new'), action = 'newInstance' }
+  })
 
   local tableCfg = {
     showBorders = false,
@@ -226,7 +234,7 @@ function SetupWindow:buildUI()
       { _T('tab_save'), save },
   })
 
-  local status = Label("[←↑→↓]功能选择  [Enter]确认  [N]新建配置"):size(nil, 1)
+  local status = Label("[←↑→↓]功能选择  [Enter]确认"):size(nil, 1)
 
   local root = Column({
       title,
@@ -277,6 +285,19 @@ function SetupWindow:editGlobalControl()
       end
     end
   )
+end
+
+function SetupWindow:newSchema()
+  table.insert(self.config.schemas, {
+    name = string.format('%s%d', _T('schema'), #self.config.schemas + 1),
+    size = {
+      w = 9,
+      h = 6,
+    },
+    count = 54,
+    layout = {},
+  })
+  self:refreshSchemas()
 end
 
 function SetupWindow:editSchema(info)
@@ -338,6 +359,18 @@ function SetupWindow:deleteSchema(index)
       end
     end
   )
+end
+
+function SetupWindow:newInstance()
+  table.insert(self.config.instances, {
+    name = string.format('%s #%d', _T('reactor'), #self.config.instances + 1),
+    enabled = true,
+    heat_max = 0,
+    heat_min = 0,
+    components = {},
+    profiles = {},
+  })
+  self:refreshInstances()
 end
 
 function SetupWindow:editInstance(index)

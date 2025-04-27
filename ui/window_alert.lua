@@ -30,10 +30,10 @@ function Alert:onLoad()
   local buttons = Row()
 
   if self.buttons & Alert.Ok == Alert.Ok then
-    buttons:addSubview(Button(_T('alert_ok')):action('clickedOk'))
+    buttons:addSubview(Button(_T('ok')):action('clickedOk'))
   end
   if self.buttons & Alert.Cancel == Alert.Cancel then
-    buttons:addSubview(Button(_T('alert_cancel')):action('clickedCancel'))
+    buttons:addSubview(Button(_T('cancel')):action('clickedCancel'))
   end
 
   self.ui = Frame(self.title, Column({
