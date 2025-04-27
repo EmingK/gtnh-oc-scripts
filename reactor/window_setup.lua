@@ -34,14 +34,38 @@ local Table = require('ui.table')
 local appVersion = require('reactor.version')
 local config = require('reactor.config')
 local builtins = require('reactor.builtins')
+local SelectWindow = require('ui.window_select')
 local RedstoneWindow = require('reactor.window_redstone')
 local InstanceWindow = require('reactor.window_instance')
 local SchemaWindow = require('reactor.window_schema')
 
+local function makeDefaultConfig()
+  return {
+    lang = i18n.langList.default,
+    schemas = {},
+    instances = {},
+  }
+end
+
+local function getCopyName(name, listOfNameOwner)
+  local names = {}
+  for _, entry in pairs(listOfNameOwner) do
+    names[entry.name] = true
+  end
+
+  local namePrefix = string.format("%s %s", name, _T('name_copy'))
+  local suffix = 1
+  local newName = namePrefix
+  while names[newName] do
+    newName = string.format("%s%d", namePrefix, suffix)
+  end
+  return newName
+end
+
 local SetupWindow = class(Window)
 
 function SetupWindow:onLoad()
-  self.config = config.get()
+  self.config = config.get() or makeDefaultConfig()
 
   term.clear()
   local ui = self:buildUI()
@@ -85,7 +109,7 @@ function SetupWindow:buildGeneralTab()
   return Table(tableContents, tablecfg)
 end
 
-function SetupWindow:buildSchemasTab()
+function SetupWindow:calcSchemasTabContent()
   local tableContents = {}
   table.insert(tableContents, {
     { display = _T('builtin_schemas') },
@@ -112,7 +136,7 @@ function SetupWindow:buildSchemasTab()
     })
   end
 
-  local tablecfg = {
+  local tableCfg = {
     showBorders = false,
     rows = {
       n = #tableContents
@@ -121,15 +145,26 @@ function SetupWindow:buildSchemasTab()
       n = 3,
       defaultWidth = 8,
       [1] = {
-        width = 16
+        width = 30
       }
     }
   }
-
-  return Table(tableContents, tablecfg)
+  return tableContents, tableCfg
 end
 
-function SetupWindow:buildReactorsTab()
+function SetupWindow:buildSchemasTab()
+  local tableContents, tableCfg = self:calcSchemasTabContent()
+  return Table(tableContents, tableCfg)
+end
+
+function SetupWindow:refreshSchemas()
+  local tableContents, tableCfg = self:calcSchemasTabContent()
+  self.schemasTabTable.contents = tableContents
+  self.schemasTabTable.config = tableCfg
+  self.schemasTabTable:reload()
+end
+
+function SetupWindow:calcReactorsTabContent()
   local tableContents = {}
 
   for i, instance in ipairs(self.config.instances or {}) do
@@ -140,7 +175,7 @@ function SetupWindow:buildReactorsTab()
     })
   end
 
-  local tablecfg = {
+  local tableCfg = {
     showBorders = false,
     rows = {
       n = #tableContents
@@ -154,7 +189,19 @@ function SetupWindow:buildReactorsTab()
     }
   }
 
-  return Table(tableContents, tablecfg)
+  return tableContents, tableCfg
+end
+
+function SetupWindow:buildReactorsTab()
+  local tableContents, tableCfg = self:calcReactorsTabContent()
+  return Table(tableContents, tableCfg)
+end
+
+function SetupWindow:refreshInstances()
+  local tableContents, tableCfg = self:calcReactorsTabContent()
+  self.reactorsTabTable.contents = tableContents
+  self.reactorsTabTable.config = tableCfg
+  self.reactorsTabTable:reload()
 end
 
 function SetupWindow:buildSaveTab()
@@ -163,15 +210,15 @@ end
 
 function SetupWindow:buildUI()
   local title = Label(string.format(_T('title_config_app'), appVersion)):size(nil, 1)
-  local general = self:buildGeneralTab()
-  local schemas = self:buildSchemasTab()
-  local reactors = self:buildReactorsTab()
+  self.generalTabTable = self:buildGeneralTab()
+  self.schemasTabTable = self:buildSchemasTab()
+  self.reactorsTabTable = self:buildReactorsTab()
   local save = self:buildSaveTab()
 
   local main = Tabs({
-      { _T('tab_general'), general },
-      { _T('tab_schemas'), schemas },
-      { _T('tab_reactors'), reactors },
+      { _T('tab_general'), self.generalTabTable },
+      { _T('tab_schemas'), self.schemasTabTable },
+      { _T('tab_reactors'), self.reactorsTabTable },
       { _T('tab_save'), save },
   })
 
@@ -191,16 +238,28 @@ end
 function SetupWindow:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.x then
     self:dismiss()
-  -- elseif keycode == keyboard.keys.enter then
-  --   local rs = self.config.instances[1].components.redstone
-  --   local win = RedstoneWindow:new(rs)
-  --   self:present(win)
   else
     Window.on_key_down(self, device, key, keycode)
   end
 end
 
 function SetupWindow:editI18n()
+  local languages = {}
+  for name, _ in pairs(i18n.langList) do
+    if name ~= 'default' then
+      table.insert(languages, name)
+    end
+  end
+
+  local win = SelectWindow:new(_T('language'), languages)
+  self:present(
+    win,
+    function(idx)
+      local langCode = i18n.langList[languages[idx]]
+      self.config.lang = langCode
+      self:reloadLanguage(langCode)
+    end
+  )
 end
 
 function SetupWindow:editGlobalControl()
@@ -228,18 +287,35 @@ function SetupWindow:editSchema(info)
     return
   end
 
-  local win = SchemaWindow:new(schema)
+  local win = SchemaWindow:new(schema, info.builtin)
   self:present(
     win,
     function(editOk, newSchema)
-      if editOk then
-        --self.config.global_control = newConfig
+      if editOk and not info.builtin then
+        self.config.schemas[info.i] = newSchema
+        self.schemasTabTable:reload()
       end
     end
   )
 end
 
 function SetupWindow:copySchema(info)
+  local schema
+  if info.builtin then
+    schema = builtins.schemas[info.i]
+  else
+    schema = self.config.schemas[info.i]
+  end
+
+  if not schema then
+    return
+  end
+
+  schema = utils.copy(schema)
+  schema.name = getCopyName(schema.name, self.config.schemas)
+  schema.displayName = nil
+  table.insert(self.config.schemas, schema)
+  self:refreshSchemas()
 end
 
 function SetupWindow:editInstance(index)
@@ -256,6 +332,14 @@ function SetupWindow:editInstance(index)
 end
 
 function SetupWindow:copyInstance(index)
+  local instance = self.config.instances[index]
+  instance = utils.copy(instance)
+  instance.name = getCopyName(instance.name, self.config.instances)
+  table.insert(self.config.instances, instance)
+  self:refreshInstances()
+end
+
+function SetupWindow:reloadLanguage(code)
 end
 
 return SetupWindow
