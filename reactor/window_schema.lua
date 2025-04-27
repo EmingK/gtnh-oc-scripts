@@ -16,6 +16,7 @@ local Button = require('ui.button')
 local Table = require('ui.table')
 local Separator = require('ui.separator')
 local Select = require('ui.window_select')
+local InputWindow = require('ui.window_input')
 require('reactor.window+select_component')
 
 local function makeDefaultConfig()
@@ -122,12 +123,44 @@ function SchemaWindow:makeTableContents()
 end
 
 function SchemaWindow:editName()
+  local win = InputWindow:new(_T('schema_name'), _T('input_prompt_schema_name'))
+  self:present(
+    win,
+    function(result)
+      self.config.name = result
+      self:makeTableContents()
+      self.left.contents = self.tblCfgContents
+      self.left:reload()
+    end
+  )
 end
 
 function SchemaWindow:editWidth()
+  local win = InputWindow:new(_T('schema_width'), _T('input_prompt_schema_width'))
+  self:present(
+    win,
+    function(result)
+      self.config.size.w = tonumber(result)
+      self:makeTableContents()
+      self.left.contents = self.tblCfgContents
+      self.left:reload()
+      self.right:reload()
+    end
+  )
 end
 
 function SchemaWindow:editHeight()
+  local win = InputWindow:new(_T('schema_height'), _T('input_prompt_schema_height'))
+  self:present(
+    win,
+    function(result)
+      self.config.size.h = tonumber(result)
+      self:makeTableContents()
+      self.left.contents = self.tblCfgContents
+      self.left:reload()
+      self.right:reload()
+    end
+  )
 end
 
 function SchemaWindow:clickedOk()
@@ -136,6 +169,25 @@ end
 
 function SchemaWindow:clickedCancel()
   self:dismiss(false)
+end
+
+function SchemaWindow:editTableInplace(char)
+  local idx = (self.right.selectedRow - 1) * self.config.size.w + self.right.selectedColumn
+  self.config.layout[idx] = char
+  self:makeTableContents()
+  -- no changes to table config, no reload needed
+  self.right:setNeedUpdate()
+end
+
+function SchemaWindow:on_key_down(device, key, keycode)
+  if (key >= 0x41 and key <= 0x5a) or (key >= 0x61 and key <= 0x7a) then
+    if self.selectedElement == self.right then
+      -- Alphabet keys inside table
+      self:editTableInplace(string.char(key):upper())
+      return
+    end
+  end
+  Window.on_key_down(self, device, key, keycode)
 end
 
 return SchemaWindow
