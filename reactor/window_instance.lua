@@ -7,6 +7,7 @@
 
 local class = require('core.class')
 local utils = require('core.utils')
+local reactorUtils = require('reactor.utils')
 
 local Window = require('ui.window')
 local Column = require('ui.column')
@@ -18,6 +19,7 @@ local Separator = require('ui.separator')
 local Select = require('ui.window_select')
 local InputWindow = require('ui.window_input')
 local RedstoneWindow = require('reactor.window_redstone')
+local TransposerWindow = require('reactor.window_transposer')
 require('reactor.window+select_component')
 
 local InstanceWindow = class(Window)
@@ -82,23 +84,23 @@ function InstanceWindow:makeTableContents()
     },
     {
       { display = _T('transposer') },
-      { display = _T('edit'), action = 'editTransposer' }
+      { display = reactorUtils.transposerDescription(self.config.components.transposer), action = 'editTransposer' }
     },
     {
       { display = _T('redstone_control') },
-      { display = _T('edit'), action = 'editRedstone' }
+      { display = reactorUtils.redstoneDescription(self.config.components.redstone), action = 'editRedstone' }
     },
     {
       { display = _T('profile_working') },
-      { display = _T('edit'), action = 'editProfileWorking' }
+      { display = reactorUtils.profileDescription(self.config.profiles.working), action = 'editProfileWorking' }
     },
     {
       { display = _T('profile_heatup') },
-      { display = _T('edit'), action = 'editProfileHeatup' }
+      { display = reactorUtils.profileDescription(self.config.profiles.heatup), action = 'editProfileHeatup' }
     },
     {
       { display = _T('profile_cooldown') },
-      { display = _T('edit'), action = 'editProfileCooldown' }
+      { display = reactorUtils.profileDescription(self.config.profiles.cooldown), action = 'editProfileCooldown' }
     },
   }
   self.tableCfg.rows.n = #self.tableContents
@@ -173,7 +175,16 @@ function InstanceWindow:editReactorAddress()
 end
 
 function InstanceWindow:editTransposer()
-  -- TODO
+  local tp = self.config.components.transposer
+  local win = TransposerWindow:new(tp)
+  self:present(
+    win,
+    function(editOk, newConfig)
+      if editOk then
+        self.config.components.transposer = newConfig
+      end
+    end
+  )
 end
 
 function InstanceWindow:editRedstone()
