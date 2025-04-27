@@ -182,6 +182,9 @@ function InstanceWindow:editTransposer()
     function(editOk, newConfig)
       if editOk then
         self.config.components.transposer = newConfig
+        self:makeTableContents()
+        self.list.contents = self.tableContents
+        self.list:reload()
       end
     end
   )
@@ -195,6 +198,9 @@ function InstanceWindow:editRedstone()
     function(editOk, newConfig)
       if editOk then
         self.config.components.redstone = newConfig
+        self:makeTableContents()
+        self.list.contents = self.tableContents
+        self.list:reload()
       end
     end
   )

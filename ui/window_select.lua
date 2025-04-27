@@ -18,12 +18,12 @@ local Select = class(Window)
 
 function Select:init(super, title, options)
   super.init()
-  self.title = title or _T('alert_title')
+  self.title = title or _T('select_title')
   self.options = options
 end
 
 function Select:onLoad()
-  local maxWidth = 0
+  local maxWidth = unicode.wlen(self.title)
   for _, option in ipairs(self.options) do
     maxWidth = math.max(maxWidth, unicode.wlen(option))
   end
