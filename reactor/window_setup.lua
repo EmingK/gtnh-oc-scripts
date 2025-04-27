@@ -34,6 +34,7 @@ local Table = require('ui.table')
 local appVersion = require('reactor.version')
 local config = require('reactor.config')
 local builtins = require('reactor.builtins')
+local Alert = require('ui.window_alert')
 local SelectWindow = require('ui.window_select')
 local RedstoneWindow = require('reactor.window_redstone')
 local InstanceWindow = require('reactor.window_instance')
@@ -58,6 +59,7 @@ local function getCopyName(name, listOfNameOwner)
   local newName = namePrefix
   while names[newName] do
     newName = string.format("%s%d", namePrefix, suffix)
+    suffix = suffix + 1
   end
   return newName
 end
@@ -133,6 +135,7 @@ function SetupWindow:calcSchemasTabContent()
       { display = schema.displayName or schema.name or 'Unnamed' },
       { display = _T('edit'), action = 'editSchema', value = { builtin = false, i = i } },
       { display = _T('copy'), action = 'copySchema', value = { builtin = false, i = i } },
+      { display = _T('delete'), action = 'deleteSchema', value = i },
     })
   end
 
@@ -142,7 +145,7 @@ function SetupWindow:calcSchemasTabContent()
       n = #tableContents
     },
     columns = {
-      n = 3,
+      n = 4,
       defaultWidth = 8,
       [1] = {
         width = 30
@@ -172,6 +175,7 @@ function SetupWindow:calcReactorsTabContent()
       { display = instance.name or 'Unnamed' },
       { display = _T('edit'), action = 'editInstance', value = i },
       { display = _T('copy'), action = 'copyInstance', value = i },
+      { display = _T('delete'), action = 'deleteInstance', value = i },
     })
   end
 
@@ -181,10 +185,10 @@ function SetupWindow:calcReactorsTabContent()
       n = #tableContents
     },
     columns = {
-      n = 3,
+      n = 4,
       defaultWidth = 8,
       [1] = {
-        width = 16
+        width = 30
       }
     }
   }
@@ -318,6 +322,24 @@ function SetupWindow:copySchema(info)
   self:refreshSchemas()
 end
 
+function SetupWindow:deleteSchema(index)
+  local schema = self.config.schemas[index]
+  local alert = Alert:new(
+    _T('confirm_delete'), 
+    string.format(_T('prompt_confirm_delete'), schema.name),
+    Alert.Ok | Alert.Cancel
+  )
+  self:present(
+    alert,
+    function(result)
+      if result == Alert.Ok then
+        table.remove(self.config.schemas, index)
+        self:refreshSchemas()
+      end
+    end
+  )
+end
+
 function SetupWindow:editInstance(index)
   local instance = self.config.instances[index]
   local win = InstanceWindow:new(instance)
@@ -337,6 +359,24 @@ function SetupWindow:copyInstance(index)
   instance.name = getCopyName(instance.name, self.config.instances)
   table.insert(self.config.instances, instance)
   self:refreshInstances()
+end
+
+function SetupWindow:deleteInstance(index)
+  local instance = self.config.instances[index]
+  local alert = Alert:new(
+    _T('confirm_delete'), 
+    string.format(_T('prompt_confirm_delete'), instance.name),
+    Alert.Ok | Alert.Cancel
+  )
+  self:present(
+    alert,
+    function(result)
+      if result == Alert.Ok then
+        table.remove(self.config.instances, index)
+        self:refreshInstances()
+      end
+    end
+  )
 end
 
 function SetupWindow:reloadLanguage(code)
