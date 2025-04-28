@@ -129,16 +129,23 @@ function Table:cellSelectableAt(row, col)
   local row = self.contents[row]
   local cell = row and row[col]
   local cellSelectable = cell and cell.selectable
-  if cellSelectable == nil then
-    -- follow the row and column's config
-    local rowCfg = self.config.rows[row]
-    local rowSelectable = rowCfg and rowCfg.selectable
-    local colCfg = self.config.columns[col]
-    local colSelectable = colCfg and colCfg.selectable
-    cellSelectable = cellSelectable or rowSelectable or colSelectable or self.selectable
+
+  if cellSelectable ~= nil then
+    return cellSelectable
+  end
+  -- follow the row and column's config
+  local rowCfg = self.config.rows[row]
+  local rowSelectable = rowCfg and rowCfg.selectable
+  if rowSelectable ~= nil then
+    return rowSelectable
+  end
+  local colCfg = self.config.columns[col]
+  local colSelectable = colCfg and colCfg.selectable
+  if colSelectable ~= nil then
+    return colSelectable
   end
 
-  return cellSelectable
+  return self.selectable
 end
 
 --[[

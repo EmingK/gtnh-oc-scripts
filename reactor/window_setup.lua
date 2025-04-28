@@ -103,6 +103,7 @@ function SetupWindow:buildGeneralTab()
       n = 2,
       defaultWidth = 10,
       [1] = {
+        selectable = false,
         width = 16
       }
     }
@@ -113,6 +114,7 @@ end
 
 function SetupWindow:calcSchemasTabContent()
   local tableContents = {}
+  local nextSectionRowIndex = 2
   table.insert(tableContents, {
     { display = _T('builtin_schemas') },
   })
@@ -124,6 +126,7 @@ function SetupWindow:calcSchemasTabContent()
       { display = _T('view'), action = 'editSchema', value = { builtin = true, i = i } },
       { display = _T('copy'), action = 'copySchema', value = { builtin = true, i = i } },
     })
+    nextSectionRowIndex = nextSectionRowIndex + 1
   end
 
   table.insert(tableContents, {
@@ -146,13 +149,20 @@ function SetupWindow:calcSchemasTabContent()
   local tableCfg = {
     showBorders = false,
     rows = {
-      n = #tableContents
+      n = #tableContents,
+      [1] = {
+        selectable = false,
+      },
+      [nextSectionRowIndex] = {
+        selectable = false,
+      }
     },
     columns = {
       n = 4,
       defaultWidth = 8,
       [1] = {
-        width = 30
+        width = 30,
+        selectable = false
       }
     }
   }
