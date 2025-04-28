@@ -81,6 +81,7 @@ function Table:init(super, contents, config)
   super.init()
   self.contents = contents
   self.config = config
+  self.selectable = true
 
   self.offset = {
     x = 0,
@@ -107,35 +108,13 @@ function Table:initSelection(navFrom)
 end
 
 function Table:handleNavigation(nav)
-  -- TODO: handle scroll
   -- TODO: cell level refresh
-  -- TODO: handle config selectable
-  if nav == Navigation.up then
-    if self.selectedRow > 1 then
-      self.selectedRow = self.selectedRow - 1
-      self:setNeedUpdate()
-      return self
-    end
-  elseif nav == Navigation.down then
-    if self.selectedRow < self.config.rows.n then
-      self.selectedRow = self.selectedRow + 1
-      self:setNeedUpdate()
-      return self
-    end
-  elseif nav == Navigation.left then
-    if self.selectedColumn > 1 then
-      self.selectedColumn = self.selectedColumn - 1
-      self:setNeedUpdate()
-      return self
-    end
-  elseif nav == Navigation.right then
-    if self.selectedColumn < self.config.columns.n then
-      self.selectedColumn = self.selectedColumn + 1
-      self:setNeedUpdate()
-      return self
-    end
+  local nextRow, nextCol = self:findNextSelectablePos(nav)
+  if nextRow and nextCol then
+    self:selectCell(nextRow, nextCol)
+    return self
   end
-
+  
   local next = Element.handleNavigation(self, nav)
   if next then
     self.selectedRow = nil
@@ -143,6 +122,95 @@ function Table:handleNavigation(nav)
     self:setNeedUpdate()
   end
   return next
+end
+
+function Table:cellSelectableAt(row, col)
+  -- cell's config is at top priority
+  local row = self.contents[row]
+  local cell = row and row[col]
+  local cellSelectable = cell and cell.selectable
+  if cellSelectable == nil then
+    -- follow the row and column's config
+    local rowCfg = self.config.rows[row]
+    local rowSelectable = rowCfg and rowCfg.selectable
+    local colCfg = self.config.columns[col]
+    local colSelectable = colCfg and colCfg.selectable
+    cellSelectable = cellSelectable or rowSelectable or colSelectable or self.selectable
+  end
+
+  return cellSelectable
+end
+
+--[[
+  Find a coordinate of cell when navigated with `nav`.
+  @returns row, column or nil
+]]
+function Table:findNextSelectablePos(nav)
+  local fCfgMain, fCfgCross, fSelMain, fSelCross, delta
+  if nav == Navigation.up then
+    fCfgMain = 'rows'
+    fCfgCross = 'columns'
+    fSelMain = 'selectedRow'
+    fSelCross = 'selectedColumn'
+    delta = -1
+  elseif nav == Navigation.down then
+    fCfgMain = 'rows'
+    fCfgCross = 'columns'
+    fSelMain = 'selectedRow'
+    fSelCross = 'selectedColumn'
+    delta = 1
+  elseif nav == Navigation.left then
+    fCfgMain = 'columns'
+    fCfgCross = 'rows'
+    fSelMain = 'selectedColumn'
+    fSelCross = 'selectedRow'
+    delta = -1
+  elseif nav == Navigation.right then
+    fCfgMain = 'columns'
+    fCfgCross = 'rows'
+    fSelMain = 'selectedColumn'
+    fSelCross = 'selectedRow'
+    delta = 1
+  else 
+    error("bug: unexpected nav direction")
+  end
+
+  local nextPos = {
+    selectedRow = self.selectedRow,
+    selectedColumn = self.selectedColumn
+  }
+
+  local nextMain = self[fSelMain] + delta
+  while nextMain >= 1 and nextMain <= self.config[fCfgMain].n do
+    nextPos[fSelMain] = nextMain
+    if self:cellSelectableAt(nextPos.selectedRow, nextPos.selectedColumn) then
+      return nextPos.selectedRow, nextPos.selectedColumn
+    end
+
+    -- skip if the row/column disable selection
+    local mAxisCfg = self.config[fCfgMain][nextMain]
+    if (mAxisCfg and mAxisCfg.selectable) ~= false then
+      -- search a cell inside cross direction
+      for deltaCross = 1, -1, -2 do
+        nextPos[fSelCross] = self[fSelCross]
+        local nextCross = self[fSelCross] + deltaCross
+        while nextCross >= 1 and nextCross <= self.config[fCfgCross].n do
+          nextPos[fSelCross] = nextCross
+          if self:cellSelectableAt(nextPos.selectedRow, nextPos.selectedColumn) then
+            return nextPos.selectedRow, nextPos.selectedColumn
+          end
+        end
+      end
+    end
+    nextMain = nextMain + delta
+  end
+  return nil
+end
+
+function Table:selectCell(row, col)
+  self.selectedRow = row
+  self.selectedColumn = col
+  self:setNeedUpdate()
 end
 
 function Table:selectedContent()
