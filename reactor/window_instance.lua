@@ -107,16 +107,24 @@ function InstanceWindow:makeTableContents()
   self.tableCfg.rows.n = #self.tableContents
 end
 
+function InstanceWindow:makeRefreshingCallback(fn)
+  return function(...)
+    fn(...)
+    self:makeTableContents()
+    self.list.contents = self.tableContents
+    self.list:reload()
+  end
+end
+
 function InstanceWindow:editName()
   local win = InputWindow:new(_T('instance_name'), _T('input_prompt_instance_name'))
   self:present(
     win,
-    function(result)
-      self.config.name = result
-      self:makeTableContents()
-      self.list.contents = self.tableContents
-      self.list:reload()
-    end
+    self:makeRefreshingCallback(
+      function(result)
+        self.config.name = result
+      end
+    )
   )
 end
 
@@ -128,12 +136,11 @@ function InstanceWindow:editEnabled()
 
   self:present(
     selectEnabled, 
-    function(result)
-      self.config.enabled = result == 1
-      self:makeTableContents()
-      self.list.contents = self.tableContents
-      self.list:reload()
-    end
+    self:makeRefreshingCallback(
+      function(result)
+        self.config.enabled = result == 1
+      end
+    )
   )
 end
 
@@ -141,12 +148,11 @@ function InstanceWindow:editMaxHeat()
   local win = InputWindow:new(_T('max_heat'), _T('input_prompt_max_heat'))
   self:present(
     win,
-    function(result)
-      self.config.heat_max = tonumber(result)
-      self:makeTableContents()
-      self.list.contents = self.tableContents
-      self.list:reload()
-    end
+    self:makeRefreshingCallback(
+      function(result)
+        self.config.heat_max = tonumber(result)
+      end
+    )
   )
 end
 
@@ -154,24 +160,22 @@ function InstanceWindow:editMinHeat()
   local win = InputWindow:new(_T('min_heat'), _T('input_prompt_min_heat'))
   self:present(
     win,
-    function(result)
-      self.config.heat_min = tonumber(result)
-      self:makeTableContents()
-      self.list.contents = self.tableContents
-      self.list:reload()
-    end
+    self:makeRefreshingCallback(
+      function(result)
+        self.config.heat_min = tonumber(result)
+      end
+    )
   )
 end
 
 function InstanceWindow:editReactorAddress()
   self:selectComponent(
     'reactor',
-    function(address)
-      self.config.components.reactor = address
-      self:makeTableContents()
-      self.list.contents = self.tableContents
-      self.list:reload()
-    end
+    self:makeRefreshingCallback(
+      function(address)
+        self.config.components.reactor = address
+      end
+    )
   )
 end
 
@@ -180,14 +184,13 @@ function InstanceWindow:editTransposer()
   local win = TransposerWindow:new(tp)
   self:present(
     win,
-    function(editOk, newConfig)
-      if editOk then
-        self.config.components.transposer = newConfig
-        self:makeTableContents()
-        self.list.contents = self.tableContents
-        self.list:reload()
+    self:makeRefreshingCallback(
+      function(editOk, newConfig)
+        if editOk then
+          self.config.components.transposer = newConfig
+        end
       end
-    end
+    )
   )
 end
 
@@ -196,14 +199,13 @@ function InstanceWindow:editRedstone()
   local win = RedstoneWindow:new(rs)
   self:present(
     win,
-    function(editOk, newConfig)
-      if editOk then
-        self.config.components.redstone = newConfig
-        self:makeTableContents()
-        self.list.contents = self.tableContents
-        self.list:reload()
+    self:makeRefreshingCallback(
+      function(editOk, newConfig)
+        if editOk then
+          self.config.components.redstone = newConfig
+        end
       end
-    end
+    )
   )
 end
 
@@ -212,14 +214,13 @@ function InstanceWindow:editProfile(name)
   local win = ProfileWindow:new(profile)
   self:present(
     win,
-    function(editOk, newConfig)
-      if editOk then
-        self.config.profiles[name] = newConfig
-        self:makeTableContents()
-        self.list.contents = self.tableContents
-        self.list:reload()
+    self:makeRefreshingCallback(
+      function(editOk, newConfig)
+        if editOk then
+          self.config.profiles[name] = newConfig
+        end
       end
-    end
+    )
   )
 end
 
