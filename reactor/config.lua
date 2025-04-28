@@ -111,7 +111,11 @@ local function configPrepare()
     schemasByKey[schema.name] = schema
   end
 
-  for _, schema in ipairs(config.schemas) do
+  if not config then 
+    return
+  end
+
+  for _, schema in ipairs(config.schemas or {}) do
     schemasByKey[schema.name] = schema
   end
 end

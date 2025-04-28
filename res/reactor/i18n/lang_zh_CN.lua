@@ -91,4 +91,5 @@ return {
   alert_title = '提示',
   alert_message = '消息框内容',
   name_copy = '副本',
+  keyboard_tips = '[←↑→↓]功能选择  [Enter]确认  [Q]不保存并退出',
 }

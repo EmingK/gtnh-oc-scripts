@@ -234,7 +234,7 @@ function SetupWindow:buildUI()
       { _T('tab_save'), save },
   })
 
-  local status = Label("[←↑→↓]功能选择  [Enter]确认"):size(nil, 1)
+  local status = Label(_T('keyboard_tips')):size(nil, 1)
 
   local root = Column({
       title,
