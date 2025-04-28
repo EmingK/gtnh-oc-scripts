@@ -20,6 +20,7 @@ local Select = require('ui.window_select')
 local InputWindow = require('ui.window_input')
 local RedstoneWindow = require('reactor.window_redstone')
 local TransposerWindow = require('reactor.window_transposer')
+local ProfileWindow = require('reactor.window_profile')
 require('reactor.window+select_component')
 
 local InstanceWindow = class(Window)
@@ -92,15 +93,15 @@ function InstanceWindow:makeTableContents()
     },
     {
       { display = _T('profile_working') },
-      { display = reactorUtils.profileDescription(self.config.profiles.working), action = 'editProfileWorking' }
+      { display = reactorUtils.profileDescription(self.config.profiles.working), action = 'editProfile', value = 'working' }
     },
     {
       { display = _T('profile_heatup') },
-      { display = reactorUtils.profileDescription(self.config.profiles.heatup), action = 'editProfileHeatup' }
+      { display = reactorUtils.profileDescription(self.config.profiles.heatup), action = 'editProfile', value = 'heatup' }
     },
     {
       { display = _T('profile_cooldown') },
-      { display = reactorUtils.profileDescription(self.config.profiles.cooldown), action = 'editProfileCooldown' }
+      { display = reactorUtils.profileDescription(self.config.profiles.cooldown), action = 'editProfile', value = 'cooldown' }
     },
   }
   self.tableCfg.rows.n = #self.tableContents
@@ -206,16 +207,20 @@ function InstanceWindow:editRedstone()
   )
 end
 
-function InstanceWindow:editProfileWorking()
-  -- TODO
-end
-
-function InstanceWindow:editProfileHeatup()
-  -- TODO
-end
-
-function InstanceWindow:editProfileCooldown()
-  -- TODO
+function InstanceWindow:editProfile(name)
+  local profile = self.config.profiles[name]
+  local win = ProfileWindow:new(profile)
+  self:present(
+    win,
+    function(editOk, newConfig)
+      if editOk then
+        self.config.profiles[name] = newConfig
+        self:makeTableContents()
+        self.list.contents = self.tableContents
+        self.list:reload()
+      end
+    end
+  )
 end
 
 function InstanceWindow:clickedOk()
