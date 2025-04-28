@@ -13,7 +13,7 @@ local i18n = require('core.i18n')
 local utils = require('core.utils')
 local config = require('reactor.config')
 local builtins = require('reactor.builtins')
-local App = require('core.app')
+local App = require('ui.app')
 local WindowSetup = require('reactor.window_setup')
 local WindowRun = require('reactor.window_run')
 

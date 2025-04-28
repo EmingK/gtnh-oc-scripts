@@ -16,7 +16,7 @@ local event = palRequire('event')
 local keyboard = palRequire('keyboard')
 
 local class = require('core.class')
-local App = require('core.app')
+local App = require('ui.app')
 local utils = require('core.utils')
 
 local Window = require('ui.window')
@@ -119,7 +119,7 @@ end
 -- Event handlers
 
 function MonitorWindow:on_key_down(device, key, keycode)
-  if keycode == keyboard.keys.x then
+  if keycode == keyboard.keys.q then
     self:stopReactors()
     self:dismiss()
   elseif keycode == keyboard.keys.s then

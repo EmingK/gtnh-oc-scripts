@@ -18,7 +18,7 @@ local term = palRequire('term')
 local keyboard = palRequire('keyboard')
 
 local class = require('core.class')
-local App = require('core.app')
+local App = require('ui.app')
 local utils = require('core.utils')
 local i18n = require('core.i18n')
 
@@ -248,7 +248,7 @@ function SetupWindow:buildUI()
 end
 
 function SetupWindow:on_key_down(device, key, keycode)
-  if keycode == keyboard.keys.x then
+  if keycode == keyboard.keys.q then
     self:dismiss()
   else
     Window.on_key_down(self, device, key, keycode)

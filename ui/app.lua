@@ -44,6 +44,7 @@ function App:start(window)
 end
 
 function App:stop()
+  term.clear()
   self.runloop:stop()
 end
 

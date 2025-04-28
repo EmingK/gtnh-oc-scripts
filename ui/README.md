@@ -7,7 +7,7 @@ This is an UI library for TUI application running on OpenOS.
 ### Driver
 
 An UI driver is the object responding to user input and schedule UI updates. Currently
-the only driver implementation is an instance of `core.app`. You may replace it with
+the only driver implementation is an instance of `ui.app`. You may replace it with
 your own implementation if you want to use this library independently.
 
 ### Window

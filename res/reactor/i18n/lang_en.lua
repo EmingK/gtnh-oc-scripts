@@ -92,4 +92,5 @@ return {
   alert_message = 'Message',
   name_copy = 'copy',
   keyboard_tips = '[←↑→↓]Select  [Enter]Confirm  [Q]Discard and exit',
+  create_new = '<create...>',
 }
