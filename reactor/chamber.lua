@@ -78,6 +78,10 @@ function ReactorChamber:check()
 
   if not self.running then
     self.i.control:disable()
+    self.state = _T('reactor_state_stopped')
+    if self.delegate then
+      self.delegate:onReactorUpdate(self)
+    end
     return
   end
 
@@ -100,18 +104,17 @@ function ReactorChamber:check()
     self.i.control:disable()
     if self.error then
       debugLog('rc: checkprofile error', self.error)
-      self.state = _T('reactor_state_error')
+      self.state = _T('reactor_state_error'):format(self.error)
       self.running = false
     else
       debugLog('rc: wait for applyProfile')
-      self.state = _T('reactor_state_applying')
       self.rl:enqueueScheduled(self.rlName, computer.uptime() + 1.0, utils.bind(self.applyProfile, self))
     end
     return
   end
 
   self.i.control:enable()
-  self.state = _T('reactor_state_running')
+  self.state = _T('reactor_state_running'):format(self.profileName)
   
   -- schedule next check
   local nextCheck = startTime + self.i.interval
@@ -127,7 +130,7 @@ function ReactorChamber:checkTemperature()
     end
     if self.activeProfile ~= profile then
       self.activeProfile = profile
-      self.profileName = _T('reactor_profile_name_'..name)
+      self.profileName = _T('profile_name_'..name)
       debugLog('rc: switched to profile '..name)
     end
   end
@@ -186,9 +189,14 @@ end
   current working profile. This include:
 ]]
 function ReactorChamber:applyProfile()
+  self.state = _T('reactor_state_applying')
   self.error = nil
 
   if not self.running then
+    self.state = _T('reactor_state_stopped')
+    if self.delegate then
+      self.delegate:onReactorUpdate(self)
+    end
     return
   end
 
@@ -235,6 +243,13 @@ function ReactorChamber:applyProfile()
     local layout = self.activeProfile.layout
 
     for i = 1, self.activeProfile.count do
+      if not self.running then
+        self.state = _T('reactor_state_stopped')
+        if self.delegate then
+          self.delegate:onReactorUpdate(self)
+        end
+        return
+      end
       debugLog(string.format('rc: apply for slot #%d', i))
       local profileItem = layout[i]
       local reactorItem = reactorItems[i - 1]
@@ -243,6 +258,10 @@ function ReactorChamber:applyProfile()
         debugLog('reactorItem not exist!')
         self.error = _T('profile_count_mismatch')
         -- profile misconfigured, no need to retry
+        self.state = _T('reactor_state_error'):format(self.error)
+        if self.delegate then
+          self.delegate:onReactorUpdate(self)
+        end
         return
       end
 
@@ -262,7 +281,7 @@ function ReactorChamber:applyProfile()
       if self.error then
         -- retry after 1s
         debugLog('apply error:', self.error)
-        self.state = _T('reactor_state_error')
+        self.state = _T('reactor_state_error'):format(self.error)
         self.rl:enqueueScheduled(self.rlName, computer.uptime() + 1.0, utils.bind(self.applyProfile, self))
         return
       end
