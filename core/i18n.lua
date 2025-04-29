@@ -26,10 +26,10 @@ end
 local baseModule
 
 function i18n.reload(lang)
-  local langCode = i18n.langList.default
+  local langCode = lang or i18n.langList.default
 
   for name, code in pairs(i18n.langList) do
-    if code == lang then
+    if name ~= 'default' and code == langCode then
       langCode = code
       i18n.current = name
       break
