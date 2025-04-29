@@ -58,14 +58,17 @@ function Tabs:init(super, tabs)
 end
 
 function Tabs:selectTab(index)
+  if index == self.selectedTabIndex then
+    return
+  end
   self.selectedTabIndex = index
   local oldChild = self.children[2]
   local newChild = self.tabs[index][2]
 
   self.children[2] = newChild
+  oldChild:moveToWindow(nil)
   newChild.parent = self
   newChild:moveToWindow(self.window)
-  oldChild:moveToWindow(nil)
   
   self:layout()
   self:setNeedUpdate()

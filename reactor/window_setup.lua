@@ -39,6 +39,7 @@ local SelectWindow = require('ui.window_select')
 local RedstoneWindow = require('reactor.window_redstone')
 local InstanceWindow = require('reactor.window_instance')
 local SchemaWindow = require('reactor.window_schema')
+local reactorUtils = require('reactor.utils')
 
 local function makeDefaultConfig()
   return {
@@ -86,7 +87,7 @@ function SetupWindow:buildGeneralTab()
     },
     {
       { display = _T('global_control') },
-      { display = 'None', action = 'editGlobalControl' }
+      { display = reactorUtils.redstoneDescription(self.config.global_control), action = 'editGlobalControl' }
     },
     -- {
     --   { display = _T('sync_shutdown') },
@@ -101,7 +102,7 @@ function SetupWindow:buildGeneralTab()
     },
     columns = {
       n = 2,
-      defaultWidth = 10,
+      defaultWidth = 20,
       [1] = {
         selectable = false,
         width = 16
@@ -123,8 +124,8 @@ function SetupWindow:calcSchemasTabContent()
   for i, schema in ipairs(builtinSchemas) do
     table.insert(tableContents, {
       { display = schema.displayName or schema.name or 'Unnamed' },
-      { display = _T('view'), action = 'editSchema', value = { builtin = true, i = i } },
-      { display = _T('copy'), action = 'copySchema', value = { builtin = true, i = i } },
+      { display = _T('view'), selectable = true, action = 'editSchema', value = { builtin = true, i = i } },
+      { display = _T('copy'), selectable = true, action = 'copySchema', value = { builtin = true, i = i } },
     })
     nextSectionRowIndex = nextSectionRowIndex + 1
   end
@@ -136,33 +137,26 @@ function SetupWindow:calcSchemasTabContent()
   for i, schema in ipairs(self.config.schemas or {}) do
     table.insert(tableContents, {
       { display = schema.displayName or schema.name or 'Unnamed' },
-      { display = _T('edit'), action = 'editSchema', value = { builtin = false, i = i } },
-      { display = _T('copy'), action = 'copySchema', value = { builtin = false, i = i } },
-      { display = _T('delete'), action = 'deleteSchema', value = i },
+      { display = _T('edit'), selectable = true, action = 'editSchema', value = { builtin = false, i = i } },
+      { display = _T('copy'), selectable = true, action = 'copySchema', value = { builtin = false, i = i } },
+      { display = _T('delete'), selectable = true, action = 'deleteSchema', value = i },
     })
   end
 
   table.insert(tableContents, {
-    { display = _T('create_new'), action = 'newSchema' }
+    { display = _T('create_new'), selectable = true, action = 'newSchema' }
   })
 
   local tableCfg = {
     showBorders = false,
     rows = {
       n = #tableContents,
-      [1] = {
-        selectable = false,
-      },
-      [nextSectionRowIndex] = {
-        selectable = false,
-      }
     },
     columns = {
       n = 4,
       defaultWidth = 8,
       [1] = {
         width = 30,
-        selectable = false
       }
     }
   }
@@ -171,7 +165,7 @@ end
 
 function SetupWindow:buildSchemasTab()
   local tableContents, tableCfg = self:calcSchemasTabContent()
-  return Table(tableContents, tableCfg)
+  return Table(tableContents, tableCfg):makeSelectable(false)
 end
 
 function SetupWindow:refreshSchemas()
@@ -187,14 +181,14 @@ function SetupWindow:calcReactorsTabContent()
   for i, instance in ipairs(self.config.instances or {}) do
     table.insert(tableContents, {
       { display = instance.name or 'Unnamed' },
-      { display = _T('edit'), action = 'editInstance', value = i },
-      { display = _T('copy'), action = 'copyInstance', value = i },
-      { display = _T('delete'), action = 'deleteInstance', value = i },
+      { display = _T('edit'), selectable = true, action = 'editInstance', value = i },
+      { display = _T('copy'), selectable = true, action = 'copyInstance', value = i },
+      { display = _T('delete'), selectable = true, action = 'deleteInstance', value = i },
     })
   end
 
   table.insert(tableContents, {
-    { display = _T('create_new'), action = 'newInstance' }
+    { display = _T('create_new'), selectable = true, action = 'newInstance' }
   })
 
   local tableCfg = {
@@ -216,7 +210,7 @@ end
 
 function SetupWindow:buildReactorsTab()
   local tableContents, tableCfg = self:calcReactorsTabContent()
-  return Table(tableContents, tableCfg)
+  return Table(tableContents, tableCfg):makeSelectable(false)
 end
 
 function SetupWindow:refreshInstances()

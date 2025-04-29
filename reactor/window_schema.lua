@@ -32,18 +32,20 @@ end
 
 local SchemaWindow = class(Window)
 
-function SchemaWindow:init(super, config)
+function SchemaWindow:init(super, config, isBuiltin)
   super.init()
   self.config = utils.copy(config) or makeDefaultConfig()
+  self.isBuiltin = isBuiltin
 
   self.tblCfgOptions = {
     showBorders = false,
     columns = {
       n = 2,
-      defaultWidth = 8,
-      [2] = {
-        width = 16,
-      }
+      defaultWidth = 16,
+      [1] = {
+        width = 8,
+        selectable = false,
+      },
     },
     rows = {
       n = 2
@@ -69,6 +71,10 @@ function SchemaWindow:onLoad()
   self.left = left
   local right = Table(self.tblLayoutContents, self.tblLayoutOptions)
   self.right = right
+  if self.isBuiltin then
+    left:makeSelectable(false)
+    right:makeSelectable(false)
+  end
 
   self.ui = Frame(
     _T('schema_config'),

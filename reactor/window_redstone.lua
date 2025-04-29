@@ -28,7 +28,10 @@ function RedstoneWindow:init(super, config)
     showBorders = false,
     columns = {
       n = 2,
-      defaultWidth = 20
+      defaultWidth = 20,
+      [1] = {
+        selectable = false,
+      }
     },
     rows = {
       n = 1

@@ -101,10 +101,16 @@ end
 
 function Table:initSelection(navFrom)
   -- TODO: handle navFrom
-  -- TODO: handle config selectable
-  self.selectedRow = 1
-  self.selectedColumn = 1
-  return self
+  for i = 1, self.config.rows.n do
+    for j = 1, self.config.columns.n do
+      if self:cellSelectableAt(i, j) then
+        self.selectedRow = i
+        self.selectedColumn = j
+        return self
+      end
+    end
+  end
+  return nil
 end
 
 function Table:handleNavigation(nav)
@@ -206,6 +212,7 @@ function Table:findNextSelectablePos(nav)
           if self:cellSelectableAt(nextPos.selectedRow, nextPos.selectedColumn) then
             return nextPos.selectedRow, nextPos.selectedColumn
           end
+          nextCross = nextCross + deltaCross
         end
       end
     end

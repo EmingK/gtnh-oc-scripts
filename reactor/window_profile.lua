@@ -59,6 +59,9 @@ function ProfileWindow:init(super, config, schemas)
     columns = {
         n = 1,
         defaultWidth = 2,
+        [1] = {
+          selectable = false,
+        }
     },
     rows = {
         n = 1,
