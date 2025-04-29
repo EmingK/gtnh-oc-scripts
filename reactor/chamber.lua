@@ -137,7 +137,7 @@ function ReactorChamber:checkTemperature()
 
   local heat = self.i.reactor.getHeat()
   self.heat = heat
-  if heat >= self.i.maxHeat then
+  if heat > self.i.maxHeat then
     switchProfile('cooldown')
   elseif heat < self.i.minHeat then
     switchProfile('heatup')
