@@ -78,7 +78,6 @@ function SetupWindow:onLoad()
   self.ui = root
 end
 
-
 function SetupWindow:buildGeneralTab()
   local tableContents = {
     {
@@ -302,6 +301,8 @@ function SetupWindow:editGlobalControl()
     function(editOk, newConfig)
       if editOk then
         self.config.global_control = newConfig
+        self.generalTabTable.contents[2][2].display = reactorUtils.redstoneDescription(self.config.global_control)
+        self.generalTabTable:setNeedUpdate()
       end
     end
   )
@@ -338,7 +339,7 @@ function SetupWindow:editSchema(info)
     function(editOk, newSchema)
       if editOk and not info.builtin then
         self.config.schemas[info.i] = newSchema
-        self.schemasTabTable:reload()
+        self:refreshSchemas()
       end
     end
   )
@@ -401,6 +402,7 @@ function SetupWindow:editInstance(index)
     function(editOk, newInstance)
       if editOk then
         self.config.instances[index] = newInstance
+        self:refreshInstances()
       end
     end
   )

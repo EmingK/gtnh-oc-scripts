@@ -76,12 +76,12 @@ function InstanceWindow:makeTableContents()
     --   { display = _T(tostring(self.config.enabled)), action = 'editEnabled' }
     -- },
     {
-      { display = _T('max_heat_temp') },
-      { display = tostring(self.config.heat_max), action = 'editMaxHeat' }
-    },
-    {
       { display = _T('min_heat_temp') },
       { display = tostring(self.config.heat_min), action = 'editMinHeat' }
+    },
+    {
+      { display = _T('max_heat_temp') },
+      { display = tostring(self.config.heat_max), action = 'editMaxHeat' }
     },
     {
       { display = _T('reactor_address') },
