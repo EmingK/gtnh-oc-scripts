@@ -8,6 +8,7 @@
 require('core.pal')
 local shell = palRequire('shell')
 local event = palRequire('event')
+local term = palRequire('term')
 
 local i18n = require('core.i18n')
 local utils = require('core.utils')
@@ -63,6 +64,7 @@ local function main(args, options)
   builtins.setup()
   config.prepare()
   subCommands[mode](options)
+  term.clear()
 end
 
 main(shell.parse(...))
