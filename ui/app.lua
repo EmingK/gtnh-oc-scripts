@@ -43,7 +43,11 @@ function App:start(window)
   self.runloop:run()
 end
 
-function App:stop()
+function App:stop(reload)
+  if reload then
+    self:present(self.window, utils.bind(self.stop, self))
+    return
+  end
   term.clear()
   self.runloop:stop()
 end

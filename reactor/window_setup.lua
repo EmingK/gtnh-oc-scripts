@@ -221,7 +221,23 @@ function SetupWindow:refreshInstances()
 end
 
 function SetupWindow:buildSaveTab()
-  return Row()
+  return Table({
+    {
+      { display = _T('save_and_exit'), action = 'saveAndExit' }
+    },
+    {
+      { display = _T('discard_and_exit'), action = 'discardAndExit' }
+    }
+  }, {
+    showBorders = false,
+    rows = {
+      n = 2,
+    },
+    columns = {
+      n = 1,
+      defaultWidth = 30
+    }
+  })
 end
 
 function SetupWindow:buildUI()
@@ -253,7 +269,7 @@ end
 
 function SetupWindow:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.q then
-    self:dismiss()
+    self:discardAndExit()
   else
     Window.on_key_down(self, device, key, keycode)
   end
@@ -416,7 +432,47 @@ function SetupWindow:deleteInstance(index)
   )
 end
 
+function SetupWindow:saveAndExit()
+  local backupName = config.backup()
+  config.set(self.config)
+  config.save()
+
+  if backupName then
+    local alert = Alert:new(
+      _T('backup_saved'), 
+      string.format(_T('backup_saved_filename'), backupName)
+    )
+    self:present(
+      alert,
+      function(result)
+        self:dismiss()
+      end
+    )
+  else
+    self:dismiss()
+  end
+end
+
+function SetupWindow:discardAndExit()
+  local alert = Alert:new(
+    _T('confirm_exit'), 
+    string.format(_T('prompt_confirm_exit'), instance.name),
+    Alert.Ok | Alert.Cancel
+  )
+  self:present(
+    alert,
+    function(result)
+      if result == Alert.Ok then
+        self:dismiss()
+      end
+    end
+  )
+end
+
 function SetupWindow:reloadLanguage(code)
+  i18n.reload(code)
+  builtins.setup()
+  self:dismiss(true)
 end
 
 return SetupWindow

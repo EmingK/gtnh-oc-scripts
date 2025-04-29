@@ -23,17 +23,9 @@ function _T(k)
   return langTable[k] or k
 end
 
---[[
-  Initialize i18n system.
+local baseModule
 
-  @param base: The base i18n module dir. This dir's init module is imported
-               to get a full list of supported languages. The init module
-               should export a table, of which the key is the display name,
-               and value is the module name of translation file.
-  @param lang: Selected language. Will be imported via `${base}/lang_${lang}`.
-]]
-function i18n.setup(base, lang)
-  i18n.langList = require(base)
+function i18n.reload(lang)
   local langCode = i18n.langList.default
 
   for name, code in pairs(i18n.langList) do
@@ -44,7 +36,22 @@ function i18n.setup(base, lang)
     end
   end
 
-  langTable = require(base..'/lang_'..langCode)
+  langTable = require(baseModule..'/lang_'..langCode)
+end
+
+--[[
+  Initialize i18n system.
+
+  @param base: The base i18n module dir. This dir's init module is imported
+               to get a full list of supported languages. The init module
+               should export a table, of which the key is the display name,
+               and value is the module name of translation file.
+  @param lang: Selected language. Will be imported via `${base}/lang_${lang}`.
+]]
+function i18n.setup(base, lang)
+  baseModule = base
+  i18n.langList = require(base)
+  i18n.reload(lang)
 end
 
 return i18n

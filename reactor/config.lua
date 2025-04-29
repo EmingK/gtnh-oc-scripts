@@ -10,20 +10,23 @@ local builtins = require('reactor.builtins')
 local reactorControl = require('reactor.reactor_control')
 
 local component = palRequire('component')
+local filesystem = palRequire('filesystem')
 
-local kConfigPath = 'reactor.conf'
+local kDefaultConfigPath = 'reactor.conf'
 
+local configPath = nil
 local config = nil
 local schemasByKey = {}
 
 local function configLoad(path)
-  config = utils.loadSerializedObject(path or kConfigPath)
+  configPath = path or kDefaultConfigPath
+  config = utils.loadSerializedObject(configPath)
   return config
 end
 
 local function configSave()
   if config then
-    utils.saveSerializedObject(kConfigPath, config)
+    utils.saveSerializedObject(configPath, config)
   end
 end
 
@@ -120,10 +123,21 @@ local function configPrepare()
   end
 end
 
+local function configBackup()
+  local backupFilename = configPath .. '.bak'
+  if filesystem.exists(configPath) then
+    filesystem.copy(configPath, backupFilename)
+    return backupFilename
+  end
+  return nil
+end
+
 return {
   load = configLoad,
   save = configSave,
+  backup = configBackup,
   get = function() return config end,
+  set = function(newConfig) config = newConfig end,
   instantiate = configInstantiate,
   instantiateControl = instantiateControl,
   prepare = configPrepare,
