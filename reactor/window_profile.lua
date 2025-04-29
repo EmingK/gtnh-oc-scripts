@@ -16,6 +16,7 @@ local Button = require('ui.button')
 local Table = require('ui.table')
 local Separator = require('ui.separator')
 local Select = require('ui.window_select')
+local ItemWindow = require('reactor.window_item')
 local builtins = require('reactor.builtins')
 
 local function makeDefaultConfig()
@@ -46,6 +47,9 @@ function ProfileWindow:init(super, config, schemas)
     columns = {
       n = 2,
       defaultWidth = 8,
+      [1] = {
+        selectable = false,
+      },
       [2] = {
         width = 10,
       }
@@ -59,9 +63,6 @@ function ProfileWindow:init(super, config, schemas)
     columns = {
         n = 1,
         defaultWidth = 2,
-        [1] = {
-          selectable = false,
-        }
     },
     rows = {
         n = 1,
@@ -75,7 +76,7 @@ end
 function ProfileWindow:onLoad()
   local left = Table(self.tblCfgContents, self.tblCfgOptions):size(24)
   self.left = left
-  local right = Table(self.tblLayoutContents, self.tblLayoutOptions)
+  local right = Table(self.tblLayoutContents, self.tblLayoutOptions):makeSelectable(false)
   self.right = right
 
   self.ui = Frame(
@@ -191,6 +192,18 @@ function ProfileWindow:editSchema()
 end
 
 function ProfileWindow:editItem(varName)
+  local win = ItemWindow:new(self.config.item[varName])
+  self:present(
+    win,
+    function(editOk, newItem)
+      if editOk then
+        self.config.item[varName] = newItem
+        self:makeTableContents()
+        self.left.contents = self.tblCfgContents
+        self.left:reload()
+      end
+    end
+  )
 end
 
 function ProfileWindow:clickedOk()

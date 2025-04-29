@@ -43,8 +43,20 @@ local function profileDescription(cfg)
   return schemaName
 end
 
+local function changeConditionDescription(cfg)
+  if cfg then
+    if cfg.change == 'none' then
+      return _T('change_condition_none')
+    elseif cfg.change == 'damage_less' then
+      return _T('change_condition_damage_less')
+    end
+  end
+  return _T('not_configured')
+end
+
 return {
   redstoneDescription = redstoneDescription,
   transposerDescription = transposerDescription,
   profileDescription = profileDescription,
+  changeConditionDescription = changeConditionDescription,
 }

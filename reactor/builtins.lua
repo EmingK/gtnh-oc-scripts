@@ -41,26 +41,36 @@ function builtins.setup()
   }
 
   local items = {
-    'gregtech:gt.reactorUraniumSimple',
-    'gregtech:gt.reactorUraniumDual',
-    'gregtech:gt.reactorUraniumQuad',
-    'gregtech:gt.Thoriumcell',
-    'gregtech:gt.Double_Thoriumcell',
-    'gregtech:gt.Quad_Thoriumcell',
-    'gregtech:gt.reactorMOXSimple',
-    'gregtech:gt.reactorMOXDual',
-    'gregtech:gt.reactorMOXQuad',
-    'gregtech:gt.Naquadahcell',
-    'gregtech:gt.Double_Naquadahcell',
-    'gregtech:gt.Quad_Naquadahcell',
-    'gregtech:gt.60k_Helium_Coolantcell',
-    'gregtech:gt.180k_Helium_Coolantcell',
-    'gregtech:gt.360k_Helium_Coolantcell',
-    'gregtech:gt.60k_NaK_Coolantcell',
-    'gregtech:gt.180k_NaK_Coolantcell',
-    'gregtech:gt.360k_NaK_Coolantcell',
-    'IC2:reactorVentCore',
+    { id = 'gregtech:gt.reactorUraniumSimple', reusable = true, },
+    { id = 'gregtech:gt.reactorUraniumDual', reusable = true, },
+    { id = 'gregtech:gt.reactorUraniumQuad', reusable = true, },
+    { id = 'gregtech:gt.Thoriumcell', reusable = true, },
+    { id = 'gregtech:gt.Double_Thoriumcell', reusable = true, },
+    { id = 'gregtech:gt.Quad_Thoriumcell', reusable = true, },
+    { id = 'gregtech:gt.reactorMOXSimple', reusable = true, },
+    { id = 'gregtech:gt.reactorMOXDual', reusable = true, },
+    { id = 'gregtech:gt.reactorMOXQuad', reusable = true, },
+    { id = 'gregtech:gt.Naquadahcell', reusable = true, },
+    { id = 'gregtech:gt.Double_Naquadahcell', reusable = true, },
+    { id = 'gregtech:gt.Quad_Naquadahcell', reusable = true, },
+    { id = 'gregtech:gt.glowstoneCell', reusable = true, },
+    { id = 'gregtech:gt.60k_Helium_Coolantcell', reusable = false, },
+    { id = 'gregtech:gt.180k_Helium_Coolantcell', reusable = false, },
+    { id = 'gregtech:gt.360k_Helium_Coolantcell', reusable = false, },
+    { id = 'gregtech:gt.60k_NaK_Coolantcell', reusable = false, },
+    { id = 'gregtech:gt.180k_NaK_Coolantcell', reusable = false, },
+    { id = 'gregtech:gt.360k_NaK_Coolantcell', reusable = false, },
+    { id = 'IC2:reactorVentCore', reusable = true, },
   }
+
+  local reuseableItems = {}
+  for _, itemInfo in ipairs(items) do
+    reuseableItems[itemInfo.id] = itemInfo.reusable
+  end
+
+  local function isReusable(item)
+    return reuseableItems[item] == true
+  end
 
   local checks = {
     noCheck = function() return false end,
@@ -78,6 +88,7 @@ function builtins.setup()
 
   builtins.schemas = schemas
   builtins.items = items
+  builtins.isReusable = isReusable
   builtins.check = checks
 end
 

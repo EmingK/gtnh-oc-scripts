@@ -74,7 +74,7 @@ local function buildUI(reactors)
     main:addSubview(rcUI)
   end
 
-  local status = Label("[S] Start\t[P] Stop\t[X] Exit"):size(nil, 1)
+  local status = Label(_T('keyboard_tips_run')):size(nil, 1)
 
   local root = Column({
       title,
@@ -86,10 +86,21 @@ local function buildUI(reactors)
   }
 end
 
+local alwaysOn = {
+  getInput = function() return true end,
+}
+
 local MonitorWindow = class(Window)
 
 function MonitorWindow:onLoad()
+  self.running = false
+
   local rawConfig = config.get()
+  local globalControl = alwaysOn
+  if rawConfig.global_control then 
+    config.instantiateControl(rawConfig.global_control)
+  end
+  self.globalControl = globalControl
 
   local reactors = {}
   for i, cfg in ipairs(rawConfig.instances) do
@@ -101,16 +112,28 @@ function MonitorWindow:onLoad()
   self.reactors = reactors
 
   term.clear()
-  self.ui = root
+  self.ui = buildUI(self.reactors).root
 end
 
 function MonitorWindow:startReactors()
+  self.running = true
+  if self.globalControl.getInput() then
+    self:startReactorsInner()
+  end
+end
+
+function MonitorWindow:startReactorsInner()
   for _, reactor in ipairs(self.reactors) do
     reactor:start()
   end
 end
 
 function MonitorWindow:stopReactors()
+  self.running = false
+  self:stopReactorsInner()
+end
+
+function MonitorWindow:stopReactorsInner()
   for _, reactor in ipairs(self.reactors) do
     reactor:stop()
   end
@@ -122,14 +145,22 @@ function MonitorWindow:on_key_down(device, key, keycode)
   if keycode == keyboard.keys.q then
     self:stopReactors()
     self:dismiss()
-  elseif keycode == keyboard.keys.s then
+  elseif keycode == keyboard.keys.r then
     self:startReactors()
-  elseif keycode == keyboard.keys.p then
+  elseif keycode == keyboard.keys.s then
     self:stopReactors()
   end
 end
 
 function MonitorWindow:on_redstone_changed(device, side, oldValue, newValue, color)
+  if not self.running then
+    return
+  end
+  if self.globalControl.getInput() then
+    self:startReactorsInner()
+  else
+    self:stopReactorsInner()
+  end
 end
 
 return MonitorWindow

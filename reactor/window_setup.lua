@@ -238,7 +238,7 @@ function SetupWindow:buildUI()
       { _T('tab_save'), save },
   })
 
-  local status = Label(_T('keyboard_tips')):size(nil, 1)
+  local status = Label(_T('keyboard_tips_setup')):size(nil, 1)
 
   local root = Column({
       title,

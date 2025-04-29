@@ -13,14 +13,22 @@ local AdapterReactorControl = class()
 
 function AdapterReactorControl:init(_, rcproxy)
   self.rc = rcproxy
+  self.rc.setActive(false)
+  self.enabled = false
 end
 
 function AdapterReactorControl:enable()
-  self.rc.setActive(true)
+  if not self.enabled then
+    self.rc.setActive(true)
+    self.enabled = true
+  end
 end
 
 function AdapterReactorControl:disable()
-  self.rc.setActive(false)
+  if self.enabled then
+    self.rc.setActive(false)
+    self.enabled = false
+  end
 end
 
 local VanillaReactorControl = class()
@@ -28,14 +36,26 @@ local VanillaReactorControl = class()
 function VanillaReactorControl:init(_, cfg)
   self.rs = component.proxy(cfg.address)
   self.side = cfg.side
+  self.rs.setOutput(self.side, 0)
+  self.enabled = false
+end
+
+function getInput()
+  return self.rs.getInput(self.side) ~= 0
 end
 
 function VanillaReactorControl:enable()
-  self.rs.setOutput(self.side, 15)
+  if not self.enabled then
+    self.rs.setOutput(self.side, 15)
+    self.enabled = true
+  end
 end
 
 function VanillaReactorControl:disable()
-  self.rs.setOutput(self.side, 0)
+  if self.enabled then
+    self.rs.setOutput(self.side, 0)
+    self.enabled = false
+  end
 end
 
 local BundledReactorControl = class()
@@ -44,14 +64,26 @@ function BundledReactorControl:init(_, cfg)
   self.rs = component.proxy(cfg.address)
   self.side = cfg.side
   self.color = cfg.color
+  self.rs.setBundledOutput(self.side, self.color, 0)
+  self.enabled = false
+end
+
+function getInput()
+  return self.rs.getBundledInput(self.side, self.color) ~= 0
 end
 
 function BundledReactorControl:enable()
-  self.rs.setBundledOutput(self.side, self.color, 15)
+  if not self.enabled then
+    self.rs.setBundledOutput(self.side, self.color, 15)
+    self.enabled = true
+  end
 end
 
 function BundledReactorControl:disable()
-  self.rs.setBundledOutput(self.side, self.color, 0)
+  if self.enabled then
+    self.rs.setBundledOutput(self.side, self.color, 0)
+    self.enabled = false
+  end
 end
 
 return {

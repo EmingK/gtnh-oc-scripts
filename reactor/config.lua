@@ -125,5 +125,6 @@ return {
   save = configSave,
   get = function() return config end,
   instantiate = configInstantiate,
+  instantiateControl = instantiateControl,
   prepare = configPrepare,
 }

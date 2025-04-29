@@ -91,6 +91,7 @@ return {
   alert_title = 'Alert',
   alert_message = 'Message',
   name_copy = 'copy',
-  keyboard_tips = '[←↑→↓]Select  [Enter]Confirm  [Q]Discard and exit',
+  keyboard_tips_setup = '[←↑→↓]Select  [Enter]Confirm  [Q]Discard and exit',
+  keyboard_tips_run = '[R]Run  [S]Stop  [Q]Stop and exit',
   create_new = '<create...>',
 }

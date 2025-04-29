@@ -11,6 +11,7 @@
 
 local class = require('core.class')
 local utils = require('core.utils')
+local builtins = require('reactor.builtins')
 
 local computer = palRequire('computer')
 
@@ -74,10 +75,6 @@ function ReactorChamber:check()
   self.error = nil
 
   local startTime = computer.uptime()
-  -- check control
-  --if not self.globalControl.enabled() then
-  --  self.running = false
-  --end
 
   if not self.running then
     self.i.control:disable()
@@ -196,9 +193,13 @@ function ReactorChamber:applyProfile()
   end
 
   local tp = self.i.transposer
-  local function removeFromReactor(index)
+  local function removeFromReactor(index, name)
+    local dst = tp.itemOut
+    if builtins.isReusable(name) then
+      dst = tp.itemIn
+    end
     debugLog(string.format('remove reactor item #%d', index))
-    local count = tp.transferItem(tp.itemReactor, tp.itemOut, 1, index)
+    local count = tp.transferItem(tp.itemReactor, dst, 1, index)
     coroutine.yield()
     if count == 0 then
       self.error = _T('output_full')
@@ -250,11 +251,11 @@ function ReactorChamber:applyProfile()
         insertIntoReactor(i, profileItem.name)
       elseif reactorItem.name and not profileItem then
         -- need remove
-        removeFromReactor(i)
+        removeFromReactor(i, reactorItem.name)
       elseif reactorItem.name and profileItem then
         -- need compare
         if reactorItem.name ~= profileItem.name or profileItem.check(reactorItem) then
-          local _ = removeFromReactor(i) and insertIntoReactor(i, profileItem.name)
+          local _ = removeFromReactor(i, reactorItem.name) and insertIntoReactor(i, profileItem.name)
         end
       end
 
