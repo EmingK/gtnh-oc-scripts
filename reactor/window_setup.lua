@@ -440,7 +440,7 @@ function SetupWindow:saveAndExit()
   if backupName then
     local alert = Alert:new(
       _T('backup_saved'), 
-      string.format(_T('backup_saved_filename'), backupName)
+      string.format(_T('prompt_backup'), backupName)
     )
     self:present(
       alert,
@@ -456,7 +456,7 @@ end
 function SetupWindow:discardAndExit()
   local alert = Alert:new(
     _T('confirm_exit'), 
-    string.format(_T('prompt_confirm_exit'), instance.name),
+    string.format(_T('prompt_confirm_exit')),
     Alert.Ok | Alert.Cancel
   )
   self:present(

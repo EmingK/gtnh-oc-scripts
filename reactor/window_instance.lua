@@ -70,10 +70,10 @@ function InstanceWindow:makeTableContents()
       { display = _T('name') },
       { display = self.config.name, action = 'editName' }
     },
-    {
-      { display = _T('enabled') },
-      { display = _T(tostring(self.config.enabled)), action = 'editEnabled' }
-    },
+    -- {
+    --   { display = _T('enabled') },
+    --   { display = _T(tostring(self.config.enabled)), action = 'editEnabled' }
+    -- },
     {
       { display = _T('max_heat_temp') },
       { display = tostring(self.config.heat_max), action = 'editMaxHeat' }
@@ -148,7 +148,7 @@ function InstanceWindow:editEnabled()
 end
 
 function InstanceWindow:editMaxHeat()
-  local win = InputWindow:new(_T('max_heat'), _T('input_prompt_max_heat'))
+  local win = InputWindow:new(_T('max_heat_temp'), _T('input_prompt_max_heat'))
   self:present(
     win,
     self:makeRefreshingCallback(
@@ -160,7 +160,7 @@ function InstanceWindow:editMaxHeat()
 end
 
 function InstanceWindow:editMinHeat()
-  local win = InputWindow:new(_T('min_heat'), _T('input_prompt_min_heat'))
+  local win = InputWindow:new(_T('min_heat_temp'), _T('input_prompt_min_heat'))
   self:present(
     win,
     self:makeRefreshingCallback(

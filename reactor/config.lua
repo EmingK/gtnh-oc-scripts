@@ -38,7 +38,7 @@ local function instantiateControl(cfg, rc)
   elseif cfg.mode == 'bundled' then
     return reactorControl.Bundled:new(cfg)
   else
-    error(_T('unsupported_control'))
+    error(string.format(_T('unsupported_control'), cfg.mode or '<nil>'))
   end
 end
 
@@ -51,7 +51,7 @@ local function instantiateItem(description)
   elseif description.change == 'damage_less' then
     checkFn = builtins.check.damageLess(description.threshold)
   else
-    error(_T('unsupported_item_check'))
+    error(string.format(_T('unsupported_item_check'), description.change or '<nil>'))
   end
   item.check = checkFn
 
@@ -91,7 +91,7 @@ local function configInstantiate(cfg)
   for k, v in pairs(cfg.profiles) do
     local schema = schemasByKey[v.schema]
     if not schema then
-      error(_T('invalid_schema'))
+      error(string.format(_T('invalid_schema'), v.schema or '<nil>'))
     end
 
     local profile = {}
