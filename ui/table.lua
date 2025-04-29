@@ -217,6 +217,25 @@ end
 function Table:selectCell(row, col)
   self.selectedRow = row
   self.selectedColumn = col
+
+  local yStart = self.rowPositions[self.selectedRow]
+  local xStart = self.colPositions[self.selectedColumn]
+  local yEnd = self.rowPositions[self.selectedRow + 1] - 1
+  local xEnd = self.colPositions[self.selectedColumn + 1] - 1
+
+  -- adjust offset based on cell position
+  if self.offset.x > xStart then 
+    self.offset.x = xStart
+  elseif self.offset.x + self.viewportW <= xEnd then
+    local nextOffsetX = xEnd - self.viewportW + 1
+    self.offset.x = math.min(xStart, nextOffsetX)
+  end
+  if self.offset.y > yStart then
+    self.offset.y = yStart
+  elseif self.offset.y + self.viewportH <= yEnd then
+    local nextOffsetY = yEnd - self.viewportH + 1
+    self.offset.y = math.min(yStart, nextOffsetY)
+  end
   self:setNeedUpdate()
 end
 
@@ -271,6 +290,8 @@ function Table:draw(gpu)
       viewportH = viewportH - 1
     end
   end
+  self.viewportW = viewportW
+  self.viewportH = viewportH
 
   -- paint contents
   -- decide which cell to start draw
@@ -291,12 +312,12 @@ function Table:draw(gpu)
   local currentPaintOffsetY = self.offset.y
   while currentPaintOffsetY < self.offset.y + viewportH and rowPaintIndex <= totalRows do
     local columnPaintIndex = columnPaintStartIndex
-    local availableHeight = math.min(self.rowPositions[rowPaintIndex + 1], viewportH) - currentPaintOffsetY
+    local availableHeight = math.min(self.rowPositions[rowPaintIndex + 1], self.offset.y + viewportH) - currentPaintOffsetY
 
     -- paint every column
     local currentPaintOffsetX = self.offset.x
     while currentPaintOffsetX < self.offset.x + viewportW and columnPaintIndex <= totalCols do
-      local availableWidth = math.min(self.colPositions[columnPaintIndex + 1], viewportW) - currentPaintOffsetX
+      local availableWidth = math.min(self.colPositions[columnPaintIndex + 1], self.offset.x + viewportW) - currentPaintOffsetX
       local cellAvailableHeight = availableHeight
       local sx, sy = self:screenPos(currentPaintOffsetX - self.offset.x, currentPaintOffsetY - self.offset.y)
 
