@@ -25,9 +25,10 @@ require('reactor.window+select_component')
 
 local InstanceWindow = class(Window)
 
-function InstanceWindow:init(super, config)
+function InstanceWindow:init(super, config, schemas)
   super.init()
   self.config = utils.copy(config)
+  self.schemas = schemas
 
   self.tableCfg = {
     showBorders = false,
@@ -214,7 +215,7 @@ end
 
 function InstanceWindow:editProfile(name)
   local profile = self.config.profiles[name]
-  local win = ProfileWindow:new(profile)
+  local win = ProfileWindow:new(profile, self.schemas)
   self:present(
     win,
     self:makeRefreshingCallback(

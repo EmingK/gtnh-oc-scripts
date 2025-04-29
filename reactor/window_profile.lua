@@ -40,7 +40,7 @@ function ProfileWindow:init(super, config, schemas)
   end
   self.schemasByKey = schemasByKey
 
-  self.schema = config.schema and schemasByKey[config.schema]
+  self.schema = self.config.schema and schemasByKey[self.config.schema]
 
   self.tblCfgOptions = {
     showBorders = false,
@@ -123,11 +123,16 @@ function ProfileWindow:makeTableContents()
 
   local uniqueLayoutVariables = {}
 
-  for _, var in ipairs(schema.layout or {}) do
+  for _, var in pairs(schema.layout or {}) do
     uniqueLayoutVariables[var] = true
   end
-
+  local sortedLayoutVariables = {}
   for var, _ in pairs(uniqueLayoutVariables) do
+    table.insert(sortedLayoutVariables, var)
+  end
+  table.sort(sortedLayoutVariables)
+
+  for _, var in pairs(sortedLayoutVariables) do
     local item = self.config.item[var]
     local itemDisplay = item and (item.name and _T(item.name)) or _T('not_configured')
     table.insert(tblCfgContents, {

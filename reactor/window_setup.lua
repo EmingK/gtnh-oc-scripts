@@ -395,7 +395,7 @@ end
 
 function SetupWindow:editInstance(index)
   local instance = self.config.instances[index]
-  local win = InstanceWindow:new(instance)
+  local win = InstanceWindow:new(instance, self.config.schemas)
   self:present(
     win,
     function(editOk, newInstance)

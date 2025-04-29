@@ -5,4 +5,4 @@
   LICENSE file in the root directory of this source tree.
 ]]
 
-return '0.2.0-alpha.1'
+return '0.2.0-alpha.2'

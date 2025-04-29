@@ -22,7 +22,9 @@ local builtins = require('reactor.builtins')
 local reactorUtils = require('reactor.utils')
 
 local function makeDefaultConfig()
-  return {}
+  return {
+    change = 'none'
+  }
 end
 
 local ItemWindow = class(Window)
