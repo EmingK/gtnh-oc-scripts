@@ -20,7 +20,9 @@ const targets = [
 const multilineCommentPattern = /--\[\[.*?\]\]/gs;
 
 function stripComments(module) {
-  return module.content.replaceAll(multilineCommentPattern, '');
+  return module.content
+          .replaceAll(multilineCommentPattern, '')
+          .replaceAll('shell.parse(...)', 'table.unpack(_argv)');
 }
 
 function buildTarget(cfg) {
@@ -35,7 +37,10 @@ function buildTarget(cfg) {
     }
   );
 
-  fs.writeFileSync(`dist/${cfg.name}/${cfg.name}.lua`, bundled);
+  const finalSrc = `local _argv = table.pack(require('shell').parse(...))
+  ${bundled}`
+
+  fs.writeFileSync(`dist/${cfg.name}/${cfg.name}.lua`, finalSrc);
   fs.copySync(cfg.resources, `dist/${cfg.name}/res`);
 }
 

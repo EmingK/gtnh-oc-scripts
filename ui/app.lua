@@ -48,7 +48,6 @@ function App:stop(reload)
     self:present(self.window, utils.bind(self.stop, self))
     return
   end
-  term.clear()
   self.runloop:stop()
 end
 
