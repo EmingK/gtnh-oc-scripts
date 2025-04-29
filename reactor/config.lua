@@ -14,19 +14,19 @@ local filesystem = palRequire('filesystem')
 
 local kDefaultConfigPath = 'reactor.conf'
 
-local configPath = nil
+local configFileName = nil
 local config = nil
 local schemasByKey = {}
 
 local function configLoad(path)
-  configPath = path or kDefaultConfigPath
-  config = utils.loadSerializedObject(configPath)
+  configFileName = path or kDefaultConfigPath
+  config = utils.loadSerializedObject(configFileName)
   return config
 end
 
 local function configSave()
   if config then
-    utils.saveSerializedObject(configPath, config)
+    utils.saveSerializedObject(configFileName, config)
   end
 end
 
@@ -124,6 +124,8 @@ local function configPrepare()
 end
 
 local function configBackup()
+  local cwd = os.getenv('PWD')
+  local configPath = filesystem.canonical(string.format('%s/%s', cwd, configFileName))
   local backupFilename = configPath .. '.bak'
   if filesystem.exists(configPath) then
     filesystem.copy(configPath, backupFilename)
