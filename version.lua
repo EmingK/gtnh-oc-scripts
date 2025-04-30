@@ -1,8 +1,1 @@
---[[
-  Copyright (c) 2025 Eming Kwok
-
-  This source code is licensed under the MIT license found in the
-  LICENSE file in the root directory of this source tree.
-]]
-
-return '0.2.0-alpha.2'
+return '0.1.0'
