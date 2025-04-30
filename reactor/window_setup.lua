@@ -31,7 +31,7 @@ local Column = require('ui.column')
 local Tabs = require('ui.tabs')
 local Table = require('ui.table')
 
-local appVersion = require('reactor.version')
+local appVersion = require('version')
 local config = require('reactor.config')
 local builtins = require('reactor.builtins')
 local Alert = require('ui.window_alert')

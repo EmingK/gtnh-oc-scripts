@@ -29,7 +29,7 @@ local Tabs = require('ui.tabs')
 local Frame = require('ui.frame')
 local Progress = require('ui.progress')
 
-local appVersion = require('reactor.version')
+local appVersion = require('version')
 local Chamber = require('reactor.chamber')
 local config = require('reactor.config')
 
