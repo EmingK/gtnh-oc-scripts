@@ -11,7 +11,7 @@ Following modules should be installed with `luarocks`:
 - `luasystem`, provides precise timing support, used to implement `computer.uptime`.
 - `lcurses`, used to implement `gpu` and `term`. You may need to patch
   this project if you use lua 5.4.
-- `minifs`, used to implement `filesystem`.
+- `lpath`, used to implement `filesystem`.
 
 Once dependent modules are installed, you can run and debug via entry
 script `pcrun.lua`.

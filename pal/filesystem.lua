@@ -5,9 +5,11 @@
   LICENSE file in the root directory of this source tree.
 ]]
 
-local minifs = require('minifs')
+local path = require('path')
+local fs = require('path.fs')
 
 return {
-  exists = minifs.exists,
-  copy = minifs.copy,
+  exists = fs.exists,
+  copy = fs.copy,
+  canonical = path,
 }
