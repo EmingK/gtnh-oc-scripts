@@ -5,8 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "bundle": "scripts/bundle.js",
-    "syncVersion": "scripts/sync_version.js",
+    "bundle": "node scripts/bundle.js",
+    "syncVersion": "node scripts/sync_version.js",
     "version": "npm run syncVersion && git add version.lua"
   },
   "repository": {
