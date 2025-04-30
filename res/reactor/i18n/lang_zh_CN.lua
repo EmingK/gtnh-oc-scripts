@@ -33,6 +33,7 @@ return {
   ['gregtech:gt.Double_Naquadahcell'] = '二联燃料棒（硅岩）',
   ['gregtech:gt.Double_Thoriumcell'] = '二联燃料棒（钍）',
   ['gregtech:gt.Double_Tiberiumcell'] = '二联燃料棒（泰伯利亚）',
+  ['gregtech:gt.glowstoneCell'] = '燃料棒（萤石）',
   ['gregtech:gt.MNqCell'] = '燃料棒（超能硅岩）',
   ['gregtech:gt.Naquadahcell'] = '燃料棒（硅岩）',
   ['gregtech:gt.neutroniumHeatCapacitor'] = '1G中子热容',

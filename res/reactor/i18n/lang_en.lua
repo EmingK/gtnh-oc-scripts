@@ -33,6 +33,7 @@ return {
   ['gregtech:gt.Double_Naquadahcell'] = 'Double fuel rod (Naquadah)',
   ['gregtech:gt.Double_Thoriumcell'] = 'Double fuel rod (Thorium)',
   ['gregtech:gt.Double_Tiberiumcell'] = 'Double fuel rod (Tiberium)',
+  ['gregtech:gt.glowstoneCell'] = 'Fuel rod (glowstone)',
   ['gregtech:gt.MNqCell'] = 'Fuel rod (Naquadah*)',
   ['gregtech:gt.Naquadahcell'] = 'Fuel rod (Naquadah)',
   ['gregtech:gt.neutroniumHeatCapacitor'] = '1G neutronium heat capacitor',
