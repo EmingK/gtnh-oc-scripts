@@ -1,6 +1,6 @@
 {
   "name": "gtnh-reactor-oc",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0-beta.2",
   "description": "OpenComputer reactor control for GT:NH",
   "type": "module",
   "main": "index.js",
