@@ -196,7 +196,9 @@ end
   current working profile. This include:
 ]]
 function ReactorChamber:applyProfile()
-  self.state = _T('reactor_state_applying')
+  if not self.error then
+    self.state = _T('reactor_state_applying')
+  end
   self.error = nil
 
   if not self.running then
