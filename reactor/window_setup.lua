@@ -68,7 +68,12 @@ end
 local SetupWindow = class(Window)
 
 function SetupWindow:onLoad()
-  self.config = config.get() or makeDefaultConfig()
+  local cfg = config.get()
+  if not cfg then
+    cfg = makeDefaultConfig()
+    config.set(cfg)
+  end
+  self.config = cfg
 
   term.clear()
   local ui = self:buildUI()
