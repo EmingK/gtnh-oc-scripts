@@ -26,10 +26,17 @@ function ReactorChamber:init(_, instance)
 
   self.heat = 0
   self.maxHeat = 10000
+
+  self:checkTemperature()
 end
 
 function ReactorChamber:attachTo(runloop)
   self.rl = runloop
+end
+
+function ReactorChamber:setDelegate(delegate)
+  self.delegate = delegate
+  self.delegate:onReactorUpdate(self)
 end
 
 function ReactorChamber:start()

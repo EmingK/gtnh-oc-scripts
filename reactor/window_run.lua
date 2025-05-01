@@ -39,7 +39,6 @@ function ReactorUI:init(super, reactor)
   super.init(reactor.i.name)
 
   self.reactor = reactor
-  reactor.delegate = self
 
   self.lblStatus = Label(""):size(nil, 1)
   self.lblTemp = Label("0%"):size(4, 1)
@@ -54,6 +53,7 @@ function ReactorUI:init(super, reactor)
   })
 
   self:addSubview(inner)
+  reactor:setDelegate(self)
 end
 
 function ReactorUI:onReactorUpdate()
