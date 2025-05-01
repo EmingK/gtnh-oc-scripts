@@ -26,10 +26,17 @@ function ReactorChamber:init(_, instance)
 
   self.heat = 0
   self.maxHeat = 10000
+
+  self:checkTemperature()
 end
 
 function ReactorChamber:attachTo(runloop)
   self.rl = runloop
+end
+
+function ReactorChamber:setDelegate(delegate)
+  self.delegate = delegate
+  self.delegate:onReactorUpdate(self)
 end
 
 function ReactorChamber:start()
@@ -70,7 +77,7 @@ end
   attached runloop.
 ]]
 function ReactorChamber:check()
-  debugLog('rc check')
+  debugLog('rc check', self.rlName)
 
   self.error = nil
 
@@ -189,7 +196,9 @@ end
   current working profile. This include:
 ]]
 function ReactorChamber:applyProfile()
-  self.state = _T('reactor_state_applying')
+  if not self.error then
+    self.state = _T('reactor_state_applying')
+  end
   self.error = nil
 
   if not self.running then

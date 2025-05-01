@@ -39,7 +39,6 @@ function ReactorUI:init(super, reactor)
   super.init(reactor.i.name)
 
   self.reactor = reactor
-  reactor.delegate = self
 
   self.lblStatus = Label(""):size(nil, 1)
   self.lblTemp = Label("0%"):size(4, 1)
@@ -54,6 +53,7 @@ function ReactorUI:init(super, reactor)
   })
 
   self:addSubview(inner)
+  reactor:setDelegate(self)
 end
 
 function ReactorUI:onReactorUpdate()
@@ -98,7 +98,7 @@ function MonitorWindow:onLoad()
   local rawConfig = config.get()
   local globalControl = alwaysOn
   if rawConfig.global_control then 
-    config.instantiateControl(rawConfig.global_control)
+    globalControl = config.instantiateControl(rawConfig.global_control)
   end
   self.globalControl = globalControl
 
@@ -117,7 +117,7 @@ end
 
 function MonitorWindow:startReactors()
   self.running = true
-  if self.globalControl.getInput() then
+  if self.globalControl:getInput() then
     self:startReactorsInner()
   end
 end
@@ -153,10 +153,11 @@ function MonitorWindow:on_key_down(device, key, keycode)
 end
 
 function MonitorWindow:on_redstone_changed(device, side, oldValue, newValue, color)
+  debugLog('redstone changed, global control is', self.globalControl:getInput())
   if not self.running then
     return
   end
-  if self.globalControl.getInput() then
+  if self.globalControl:getInput() then
     self:startReactorsInner()
   else
     self:stopReactorsInner()

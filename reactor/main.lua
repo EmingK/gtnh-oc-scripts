@@ -64,7 +64,9 @@ local function main(args, options)
   builtins.setup()
   config.prepare()
   subCommands[mode](options)
-  term.clear()
+  if not options.debug then
+    term.clear()
+  end
 end
 
 main(shell.parse(...))

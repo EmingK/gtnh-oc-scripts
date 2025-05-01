@@ -40,7 +40,7 @@ function VanillaReactorControl:init(_, cfg)
   self.enabled = false
 end
 
-function getInput()
+function VanillaReactorControl:getInput()
   return self.rs.getInput(self.side) ~= 0
 end
 
@@ -68,7 +68,7 @@ function BundledReactorControl:init(_, cfg)
   self.enabled = false
 end
 
-function getInput()
+function BundledReactorControl:getInput()
   return self.rs.getBundledInput(self.side, self.color) ~= 0
 end
 

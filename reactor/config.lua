@@ -69,7 +69,7 @@ local function configInstantiate(cfg)
   ret.enabled = cfg.enabled
   ret.minHeat = cfg.heat_min
   ret.maxHeat = cfg.heat_max
-  ret.interval = 0.5
+  ret.interval = 0.5 + 0.05 * #config.instances
 
   -- components
   ret.reactor = component.proxy(cfg.components.reactor)
