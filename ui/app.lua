@@ -80,7 +80,7 @@ end
 function App:handleEvent(name, ...)
   if not name then return end
 
-  debugLog(...)
+  debugLog(name, ...)
   self.window:handleEvent(name, ...)
 end
 

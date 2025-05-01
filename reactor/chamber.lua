@@ -77,7 +77,7 @@ end
   attached runloop.
 ]]
 function ReactorChamber:check()
-  debugLog('rc check')
+  debugLog('rc check', self.rlName)
 
   self.error = nil
 
