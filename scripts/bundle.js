@@ -41,7 +41,7 @@ function buildTarget(cfg) {
   ${bundled}`
 
   fs.writeFileSync(`dist/${cfg.name}/${cfg.name}.lua`, finalSrc);
-  fs.copySync(cfg.resources, `dist/${cfg.name}/res`);
+  fs.copySync(cfg.resources, `dist/${cfg.name}/res/${cfg.name}`);
 }
 
 targets.forEach(buildTarget);

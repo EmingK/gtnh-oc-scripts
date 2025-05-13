@@ -48,7 +48,7 @@ function Select:onLoad()
     main
   )
 
-  self.preferredSize = { w = maxWidth + 2, h = #self.options + 2 }
+  self.preferredSize = { w = maxWidth + 3, h = #self.options + 2 }
 end
 
 function Select:on_key_down(device, key, keycode)
