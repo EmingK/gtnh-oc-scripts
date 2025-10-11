@@ -87,5 +87,12 @@ res/    reactor.lua
 
 待添加
 
+# 版本兼容性
+
+| GTNH 版本      | 反应堆控制版本 | 当前支持   |
+|----------------|----------------|------------|
+| 2.8.0+         | 0.3.x          | ✅         |
+| 2.7 或更早版本 | 0.2.x          | 仅修复 bug |
+
 [OpenComputers]: https://oc.cil.li/
 [GT:NH]: https://github.com/GTNewHorizons/GT-New-Horizons-Modpack
