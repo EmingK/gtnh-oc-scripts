@@ -86,5 +86,12 @@ Run `reactor`.
 
 # Screenshots
 
+# Version Compatibility
+
+| GTNH Version   | ReactorControl Version | Support       |
+|----------------|------------------------|---------------|
+| 2.8.0+         | 0.3.x                  | ✅            |
+| 2.7 or earlier | 0.2.x                  | Bugfixes only |
+
 [OpenComputers]: https://oc.cil.li/
 [GT:NH]: https://github.com/GTNewHorizons/GT-New-Horizons-Modpack
