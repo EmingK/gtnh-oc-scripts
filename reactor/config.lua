@@ -17,6 +17,9 @@ local kDefaultConfigPath = 'reactor.conf'
 local configFileName = nil
 local config = nil
 local schemasByKey = {}
+local euStorages = nil
+local euLogicStart = 'or'
+local euLogicStop = 'or'
 
 local function configLoad(path)
   configFileName = path or kDefaultConfigPath
@@ -114,12 +117,29 @@ local function configPrepare()
     schemasByKey[schema.name] = schema
   end
 
-  if not config then 
+  if not config then
     return
   end
 
   for _, schema in ipairs(config.schemas or {}) do
     schemasByKey[schema.name] = schema
+  end
+
+  -- Prepare EU storages
+  euStorages = {}
+  euLogicStart = config.eu_logic_start or 'or'
+  euLogicStop = config.eu_logic_stop or 'or'
+
+  for _, storage in ipairs(config.eu_storages or {}) do
+    if storage.address and storage.address ~= '' then
+      local euProxy = component.proxy(storage.address)
+      table.insert(euStorages, {
+        name = storage.name,
+        proxy = euProxy,
+        eu_low = storage.eu_low or 0,
+        eu_high = storage.eu_high or 0,
+      })
+    end
   end
 end
 
@@ -134,6 +154,71 @@ local function configBackup()
   return nil
 end
 
+local function checkEUCondition()
+  if not euStorages or #euStorages == 0 then
+    return true, false  -- No EU control: allow start, never force stop
+  end
+
+  local startConditions = {}
+  local stopConditions = {}
+
+  for _, storage in ipairs(euStorages) do
+    local storedEU = storage.proxy.getStoredEU()
+
+    -- Start condition: EU < low threshold
+    local shouldStart = storedEU < storage.eu_low
+    table.insert(startConditions, shouldStart)
+
+    -- Stop condition: EU > high threshold
+    local shouldStop = storedEU > storage.eu_high
+    table.insert(stopConditions, shouldStop)
+  end
+
+  -- Apply start logic
+  local canStart = false
+  if euLogicStart == 'and' then
+    -- All storages must satisfy start condition
+    canStart = true
+    for _, result in ipairs(startConditions) do
+      if not result then
+        canStart = false
+        break
+      end
+    end
+  else  -- 'or'
+    -- At least one storage satisfies start condition
+    for _, result in ipairs(startConditions) do
+      if result then
+        canStart = true
+        break
+      end
+    end
+  end
+
+  -- Apply stop logic
+  local mustStop = false
+  if euLogicStop == 'and' then
+    -- All storages must satisfy stop condition
+    mustStop = true
+    for _, result in ipairs(stopConditions) do
+      if not result then
+        mustStop = false
+        break
+      end
+    end
+  else  -- 'or'
+    -- At least one storage satisfies stop condition
+    for _, result in ipairs(stopConditions) do
+      if result then
+        mustStop = true
+        break
+      end
+    end
+  end
+
+  return canStart, mustStop
+end
+
 return {
   load = configLoad,
   save = configSave,
@@ -143,4 +228,5 @@ return {
   instantiate = configInstantiate,
   instantiateControl = instantiateControl,
   prepare = configPrepare,
+  checkEUCondition = checkEUCondition,
 }

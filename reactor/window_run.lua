@@ -14,6 +14,7 @@
 local term = palRequire('term')
 local event = palRequire('event')
 local keyboard = palRequire('keyboard')
+local computer = palRequire('computer')
 
 local class = require('core.class')
 local App = require('ui.app')
@@ -97,7 +98,7 @@ function MonitorWindow:onLoad()
 
   local rawConfig = config.get()
   local globalControl = alwaysOn
-  if rawConfig.global_control then 
+  if rawConfig.global_control then
     globalControl = config.instantiateControl(rawConfig.global_control)
   end
   self.globalControl = globalControl
@@ -113,11 +114,29 @@ function MonitorWindow:onLoad()
 
   term.clear()
   self.ui = buildUI(self.reactors).root
+
+  -- Schedule periodic EU condition check
+  self:scheduleEUCheck()
+end
+
+function MonitorWindow:scheduleEUCheck()
+  local checkInterval = 5.0  -- Check every 5 seconds
+  self.app.runloop:enqueueScheduled(
+    'eu_check',
+    computer.uptime() + checkInterval,
+    function()
+      self:on_timer()
+      if self.running then
+        self:scheduleEUCheck()  -- Reschedule next check
+      end
+    end
+  )
 end
 
 function MonitorWindow:startReactors()
   self.running = true
-  if self.globalControl:getInput() then
+  local canStart, mustStop = config.checkEUCondition()
+  if self.globalControl:getInput() and canStart and not mustStop then
     self:startReactorsInner()
   end
 end
@@ -157,11 +176,40 @@ function MonitorWindow:on_redstone_changed(device, side, oldValue, newValue, col
   if not self.running then
     return
   end
-  if self.globalControl:getInput() then
+
+  local canStart, mustStop = config.checkEUCondition()
+
+  if mustStop then
+    -- Must stop due to EU condition
+    self:stopReactorsInner()
+  elseif self.globalControl:getInput() and canStart then
+    -- Can start: global control allows and EU condition allows
     self:startReactorsInner()
-  else
+  elseif not self.globalControl:getInput() then
+    -- Global control requires stop
     self:stopReactorsInner()
   end
+end
+
+function MonitorWindow:on_timer()
+  -- Periodically check EU condition
+  if not self.running then
+    return
+  end
+
+  local canStart, mustStop = config.checkEUCondition()
+
+  if mustStop then
+    -- Must stop due to EU condition
+    self:stopReactorsInner()
+  elseif self.globalControl:getInput() and canStart then
+    -- Can start: global control allows and EU condition allows
+    self:startReactorsInner()
+  elseif not self.globalControl:getInput() then
+    -- Global control requires stop
+    self:stopReactorsInner()
+  end
+  -- Otherwise, maintain current state (neither start nor stop condition met)
 end
 
 return MonitorWindow

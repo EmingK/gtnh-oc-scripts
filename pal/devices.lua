@@ -65,9 +65,29 @@ function Inventory:setItem(index, item)
   self.items[index] = item
 end
 
+local GTMachine = class()
+
+function GTMachine:init(_, capacity, stored)
+  self.capacity = capacity or 100000000  -- Default 100M EU
+  self.stored = stored or 50000000       -- Default 50M EU
+end
+
+function GTMachine:getEUCapacity()
+  return self.capacity
+end
+
+function GTMachine:getStoredEU()
+  return self.stored
+end
+
+function GTMachine:setStoredEU(amount)
+  self.stored = math.max(0, math.min(amount, self.capacity))
+end
+
 return {
   Reactor = Reactor,
   Redstone = Redstone,
   Transposer = Transposer,
   Inventory = Inventory,
+  GTMachine = GTMachine,
 }
