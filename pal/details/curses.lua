@@ -40,4 +40,8 @@ function cursesImpl.destroy()
   curses.endwin()
 end
 
+function cursesImpl.echo(enabled)
+  curses.echo(enabled)
+end
+
 return cursesImpl
