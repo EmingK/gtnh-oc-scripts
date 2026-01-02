@@ -234,4 +234,5 @@ return {
   instantiateControl = instantiateControl,
   prepare = configPrepare,
   checkEUCondition = checkEUCondition,
+  getEUStorages = function() return euStorages end,
 }
