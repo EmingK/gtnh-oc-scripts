@@ -511,8 +511,8 @@ function SetupWindow:newEUStorage()
   table.insert(self.config.eu_storages, {
     name = string.format('%s #%d', _T('eu_storage'), #self.config.eu_storages + 1),
     address = '',
-    eu_low = 0,
-    eu_high = 0,
+    eu_low = 0.2,
+    eu_high = 0.8,
   })
   self:refreshEUStorage()
 end

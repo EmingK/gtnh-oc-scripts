@@ -164,13 +164,18 @@ local function checkEUCondition()
 
   for _, storage in ipairs(euStorages) do
     local storedEU = storage.proxy.getStoredEU()
+    local capacity = storage.proxy.getEUCapacity()
+
+    -- Calculate actual thresholds from percentages
+    local lowThreshold = capacity * storage.eu_low
+    local highThreshold = capacity * storage.eu_high
 
     -- Start condition: EU < low threshold
-    local shouldStart = storedEU < storage.eu_low
+    local shouldStart = storedEU < lowThreshold
     table.insert(startConditions, shouldStart)
 
     -- Stop condition: EU > high threshold
-    local shouldStop = storedEU > storage.eu_high
+    local shouldStop = storedEU > highThreshold
     table.insert(stopConditions, shouldStop)
   end
 

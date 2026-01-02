@@ -25,8 +25,8 @@ function EUStorageWindow:init(super, config)
   self.config = utils.copy(config or {
     name = _T('eu_storage'),
     address = '',
-    eu_low = 0,
-    eu_high = 0,
+    eu_low = 0.2,
+    eu_high = 0.8,
   })
 
   self.tableCfg = {
