@@ -42,8 +42,13 @@ return {
   end,
 
   read = function()
-    -- FIXME: not work :(
-    return curses.scr:getstr()
+    -- Temporarily switch to blocking mode with echo for input
+    curses.scr:nodelay(false)
+    curses.echo(true)
+    local result = curses.scr:getstr()
+    curses.echo(false)
+    curses.scr:nodelay(true)  -- Restore non-blocking mode
+    return result
   end,
 
   -- TODO: support no line wrap
