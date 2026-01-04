@@ -27,3 +27,9 @@ own OC application for other projects.
 
 [OpenComputers]: https://oc.cil.li/
 [GT:NH]: https://github.com/GTNewHorizons/GT-New-Horizons-Modpack
+
+# Contributors
+
+<a href="https://github.com/EmingK/gtnh-oc-scripts/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=EmingK/gtnh-oc-scripts" />
+</a>
