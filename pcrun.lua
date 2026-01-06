@@ -20,6 +20,8 @@ local rc1 = devices.Reactor:new()
 local rsg = devices.Redstone:new()
 local rs1 = devices.Redstone:new()
 local tp1 = devices.Transposer:new()
+local gtm1 = devices.GTMachine:new(100000000, 30000000)  -- 100M capacity, 30M stored
+local gtm2 = devices.GTMachine:new(200000000, 150000000) -- 200M capacity, 150M stored
 
 local Inventory = devices.Inventory
 
@@ -38,5 +40,7 @@ component._register('addr_reactor', 'reactor_chamber', rc1)
 component._register('addr_redstoneg', 'redstone', rsg)
 component._register('addr_redstone1', 'redstone', rs1)
 component._register('addr_transposer1', 'transposer', tp1)
+component._register('addr_gtmachine1', 'gt_machine', gtm1)
+component._register('addr_gtmachine2', 'gt_machine', gtm2)
 
 pal.start(entry, ...)

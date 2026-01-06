@@ -7,7 +7,7 @@ This is an [OpenComputers] program for nuclear reactor controlling for the [GT:N
 # Features
 
 - Automatic control: fuel rods and coolant cells are automatic changed.
-- Global control: switch all reactors up/down via redstone signal. Connect this to your energy storage.
+- Global control: switch all reactors up/down via redstone signal. Also allows you to connect this to your energy storage.
 - Multiple instance support: control many reactors via one computer, as long as the CPU supports.
 - PR capability: support bundled redstone from ProjectRed. Simplify your block layout!
 - User friendly interface: everything have a graphical user interface, including setup. You don't need to edit any files to configure devices, neither to copy-paste long component UUIDs.
@@ -79,6 +79,21 @@ Instances are mapped to your reactors. Following properties can be configured:
   * Heat up: used if the reactor need to be heated. If you provide a minimum heat, you need to set this.
   * Cool down: used if the reactor's heat accidentally rise up. If the reactor exceeds maximum heat, and this profile is not set, the reactor will shut down.
 - Heat: minimum and maximum heat.
+
+### EU Storage Instance
+
+Energy storage GT machines, such as Rambert and Energy Station, correspond to one EU storage instance. You can configure the following attributes of the instance:
+
+- Name: EU storage machine name, which can be displayed on the operation interface.
+- Device: Configure the address of the storage machine.
+- Upper threshold: The machine should be shut down when the proportion of EU quantity in the total capacity exceeds the upper threshold.
+- Lower threshold: The machine should be turned on when the proportion of EU quantity in the total capacity is below the lower threshold.
+
+### EU Reserve Control Start-Stop Logic
+
+The EU storage control interface includes two configurable options: startup logic and shutdown logic. When configured as "AND", it will be triggered when all EU storage machines meet the corresponding threshold values. When configured as "OR", it will be triggered when any EU storage machine meets the corresponding threshold value.
+
+The priority of global redstone control is higher than that of EU reserve control.
 
 ## Run
 

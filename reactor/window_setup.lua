@@ -39,6 +39,7 @@ local SelectWindow = require('ui.window_select')
 local RedstoneWindow = require('reactor.window_redstone')
 local InstanceWindow = require('reactor.window_instance')
 local SchemaWindow = require('reactor.window_schema')
+local EUStorageWindow = require('reactor.window_eu_storage')
 local reactorUtils = require('reactor.utils')
 
 local function makeDefaultConfig()
@@ -46,6 +47,9 @@ local function makeDefaultConfig()
     lang = i18n.langList.default,
     schemas = {},
     instances = {},
+    eu_storages = {},
+    eu_logic_start = 'or',
+    eu_logic_stop = 'or',
   }
 end
 
@@ -224,6 +228,68 @@ function SetupWindow:refreshInstances()
   self.reactorsTabTable:reload()
 end
 
+function SetupWindow:calcEUStorageTabContent()
+  local tableContents = {}
+
+  for i, storage in ipairs(self.config.eu_storages or {}) do
+    table.insert(tableContents, {
+      { display = storage.name or 'Unnamed' },
+      { display = _T('edit'), selectable = true, action = 'editEUStorage', value = i },
+      { display = _T('copy'), selectable = true, action = 'copyEUStorage', value = i },
+      { display = _T('delete'), selectable = true, action = 'deleteEUStorage', value = i },
+    })
+  end
+
+  table.insert(tableContents, {
+    { display = _T('create_new'), selectable = true, action = 'newEUStorage' }
+  })
+
+  -- Add logic mode selectors
+  table.insert(tableContents, {
+    { display = '' }
+  })
+
+  local logicStart = self.config.eu_logic_start == 'and' and _T('eu_logic_and') or _T('eu_logic_or')
+  table.insert(tableContents, {
+    { display = _T('eu_logic_start') },
+    { display = logicStart, selectable = true, action = 'editEULogicStart' }
+  })
+
+  local logicStop = self.config.eu_logic_stop == 'and' and _T('eu_logic_and') or _T('eu_logic_or')
+  table.insert(tableContents, {
+    { display = _T('eu_logic_stop') },
+    { display = logicStop, selectable = true, action = 'editEULogicStop' }
+  })
+
+  local tableCfg = {
+    showBorders = false,
+    rows = {
+      n = #tableContents
+    },
+    columns = {
+      n = 4,
+      defaultWidth = 8,
+      [1] = {
+        width = 30
+      }
+    }
+  }
+
+  return tableContents, tableCfg
+end
+
+function SetupWindow:buildEUStorageTab()
+  local tableContents, tableCfg = self:calcEUStorageTabContent()
+  return Table(tableContents, tableCfg):makeSelectable(false)
+end
+
+function SetupWindow:refreshEUStorage()
+  local tableContents, tableCfg = self:calcEUStorageTabContent()
+  self.euStorageTabTable.contents = tableContents
+  self.euStorageTabTable.config = tableCfg
+  self.euStorageTabTable:reload()
+end
+
 function SetupWindow:buildSaveTab()
   return Table({
     {
@@ -249,12 +315,14 @@ function SetupWindow:buildUI()
   self.generalTabTable = self:buildGeneralTab()
   self.schemasTabTable = self:buildSchemasTab()
   self.reactorsTabTable = self:buildReactorsTab()
+  self.euStorageTabTable = self:buildEUStorageTab()
   local save = self:buildSaveTab()
 
   local main = Tabs({
       { _T('tab_general'), self.generalTabTable },
       { _T('tab_schemas'), self.schemasTabTable },
       { _T('tab_reactors'), self.reactorsTabTable },
+      { _T('tab_eu_storage'), self.euStorageTabTable },
       { _T('tab_save'), save },
   })
 
@@ -424,7 +492,7 @@ end
 function SetupWindow:deleteInstance(index)
   local instance = self.config.instances[index]
   local alert = Alert:new(
-    _T('confirm_delete'), 
+    _T('confirm_delete'),
     string.format(_T('prompt_confirm_delete'), instance.name),
     Alert.Ok | Alert.Cancel
   )
@@ -435,6 +503,92 @@ function SetupWindow:deleteInstance(index)
         table.remove(self.config.instances, index)
         self:refreshInstances()
       end
+    end
+  )
+end
+
+function SetupWindow:newEUStorage()
+  table.insert(self.config.eu_storages, {
+    name = string.format('%s #%d', _T('eu_storage'), #self.config.eu_storages + 1),
+    address = '',
+    eu_low = 0.2,
+    eu_high = 0.8,
+  })
+  self:refreshEUStorage()
+end
+
+function SetupWindow:editEUStorage(index)
+  local storage = self.config.eu_storages[index]
+  local win = EUStorageWindow:new(storage)
+  self:present(
+    win,
+    function(editOk, newStorage)
+      if editOk then
+        self.config.eu_storages[index] = newStorage
+        self:refreshEUStorage()
+      end
+    end
+  )
+end
+
+function SetupWindow:copyEUStorage(index)
+  local storage = self.config.eu_storages[index]
+  storage = utils.copy(storage)
+  storage.name = getCopyName(storage.name, self.config.eu_storages)
+  table.insert(self.config.eu_storages, storage)
+  self:refreshEUStorage()
+end
+
+function SetupWindow:deleteEUStorage(index)
+  local storage = self.config.eu_storages[index]
+  local alert = Alert:new(
+    _T('confirm_delete'),
+    string.format(_T('prompt_confirm_delete'), storage.name),
+    Alert.Ok | Alert.Cancel
+  )
+  self:present(
+    alert,
+    function(result)
+      if result == Alert.Ok then
+        table.remove(self.config.eu_storages, index)
+        self:refreshEUStorage()
+      end
+    end
+  )
+end
+
+function SetupWindow:editEULogicStart()
+  local win = SelectWindow:new(_T('eu_logic_start'), {
+    _T('eu_logic_or'),
+    _T('eu_logic_and'),
+  })
+  self:present(
+    win,
+    function(result)
+      if result == 1 then
+        self.config.eu_logic_start = 'or'
+      elseif result == 2 then
+        self.config.eu_logic_start = 'and'
+      end
+      self:refreshEUStorage()
+    end
+  )
+end
+
+function SetupWindow:editEULogicStop()
+  local win = SelectWindow:new(_T('eu_logic_stop'), {
+    _T('eu_logic_or'),
+    _T('eu_logic_and'),
+  })
+  self:present(
+    win,
+    function(result)
+      if result == 1 then
+        self.config.eu_logic_stop = 'or'
+      elseif result == 2 then
+        self.config.eu_logic_stop = 'and'
+      end
+      self:refreshEUStorage()
     end
   )
 end
