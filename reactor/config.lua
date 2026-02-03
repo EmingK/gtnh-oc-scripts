@@ -97,7 +97,7 @@ local function configInstantiate(cfg)
     local profile = {}
     profile.count = schema.count
     local layout = {}
-    for i, id in ipairs(schema.layout) do
+    for i, id in pairs(schema.layout) do
       layout[i] = instantiateItem(v.item[id])
     end
     profile.layout = layout
