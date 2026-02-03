@@ -84,10 +84,14 @@ function builtins.setup()
     { id = 'gregtech:gt.540k_Space_Coolantcell', reusable = false, },
     { id = 'gregtech:gt.1080k_Space_Coolantcell', reusable = false, },
     { id = 'gregtech:gt.neutroniumHeatCapacitor', reusable = false, },
+    { id = 'IC2:reactorVent', reusable = true, },
     { id = 'IC2:reactorVentCore', reusable = true, },
+    { id = 'IC2:reactorVentDiamond', reusable = true, },
+    { id = 'IC2:reactorVentGold', reusable = true, },
+    { id = 'IC2:reactorVentSpread', reusable = true, },
     { id = 'IC2:reactorPlating', reusable = true, heatCapacity = 1000, },
     { id = 'IC2:reactorPlatingExplosive', reusable = true, heatCapacity = 500, },
-    { id = 'IC2:reactorPlatingHeat', reusable = true, heatCapacity = 1700, },
+    { id = 'IC2:reactorPlatingHeat', reusable = true, heatCapacity = 2000, }, -- Wiki says it was 1700. Tested to be 2000 (also from decompiled code).
   }
 
   local reuseableItems = {}
