@@ -85,6 +85,9 @@ function builtins.setup()
     { id = 'gregtech:gt.1080k_Space_Coolantcell', reusable = false, },
     { id = 'gregtech:gt.neutroniumHeatCapacitor', reusable = false, },
     { id = 'IC2:reactorVentCore', reusable = true, },
+    { id = 'IC2:reactorPlating', reusable = true, heatCapacity = 1000, },
+    { id = 'IC2:reactorPlatingExplosive', reusable = true, heatCapacity = 500, },
+    { id = 'IC2:reactorPlatingHeat', reusable = true, heatCapacity = 1700, },
   }
 
   local reuseableItems = {}
@@ -92,8 +95,19 @@ function builtins.setup()
     reuseableItems[itemInfo.id] = itemInfo.reusable
   end
 
+  local heatCapacityMapping = {}
+  for _, itemInfo in ipairs(items) do
+    if itemInfo.heatCapacity then
+      heatCapacityMapping[itemInfo.id] = itemInfo.heatCapacity
+    end
+  end
+
   local function isReusable(item)
     return reuseableItems[item] == true
+  end
+
+  local function getHeatCapacity(item)
+    return heatCapacityMapping[item] or 0
   end
 
   local checks = {
@@ -114,6 +128,7 @@ function builtins.setup()
   builtins.items = items
   builtins.isReusable = isReusable
   builtins.check = checks
+  builtins.getHeatCapacity = getHeatCapacity
 end
 
 return builtins

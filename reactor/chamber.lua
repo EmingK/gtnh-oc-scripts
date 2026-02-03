@@ -137,6 +137,7 @@ function ReactorChamber:checkTemperature()
     end
     if self.activeProfile ~= profile then
       self.activeProfile = profile
+      self.maxHeat = profile.totalHeatCapacity
       self.profileName = _T('profile_name_'..name)
       debugLog('rc: switched to profile '..name)
     end

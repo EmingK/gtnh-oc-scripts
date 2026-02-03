@@ -8,6 +8,7 @@
 local class = require('core.class')
 local utils = require('core.utils')
 local reactorUtils = require('reactor.utils')
+local config = require('reactor.config')
 
 local Window = require('ui.window')
 local Column = require('ui.column')
@@ -16,6 +17,7 @@ local Frame = require('ui.frame')
 local Button = require('ui.button')
 local Table = require('ui.table')
 local Separator = require('ui.separator')
+local Alert = require('ui.window_alert')
 local Select = require('ui.window_select')
 local InputWindow = require('ui.window_input')
 local RedstoneWindow = require('reactor.window_redstone')
@@ -228,8 +230,53 @@ function InstanceWindow:editProfile(name)
   )
 end
 
+function InstanceWindow:validateProfiles()
+  local function validateInner()
+    local cfg = config.instantiate(self.config)
+    local prevHeatCapacity = nil
+    local hasCapacityMismatch = false
+    for name, profile in pairs(cfg.profiles) do
+      -- check heat capacity consistency
+      if prevHeatCapacity ~= nil and profile.totalHeatCapacity ~= prevHeatCapacity then
+        hasCapacityMismatch = true
+        break
+      end
+      prevHeatCapacity = profile.totalHeatCapacity
+    end
+    if hasCapacityMismatch then
+      local heatCapacityDescription = ''
+      for name, profile in pairs(cfg.profiles) do
+        heatCapacityDescription = heatCapacityDescription .. string.format('\n%s: %d', name, profile.totalHeatCapacity)
+      end
+      error(string.format(_T('profile_heat_capacity_not_equal'), heatCapacityDescription))
+    end
+    return true
+  end
+
+  return pcall(validateInner)
+end
+
 function InstanceWindow:clickedOk()
-  self:dismiss(true, self.config)
+  local ok, err = self:validateProfiles()
+  if ok then
+    self:dismiss(true, self.config)
+    return
+  end
+
+  local alert = Alert:new(
+    _T('confirm_validation_error'), 
+    string.format(_T('prompt_confirm_validation_error'), err),
+    Alert.Ok | Alert.Cancel,
+    6
+  )
+  self:present(
+    alert,
+    function(result)
+      if result == Alert.Ok then
+        self:dismiss(true, self.config)
+      end
+    end
+  )
 end
 
 function InstanceWindow:clickedCancel()
