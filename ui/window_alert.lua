@@ -19,15 +19,16 @@ local Alert = class(Window)
 Alert.Ok = 0
 Alert.Cancel = 1
 
-function Alert:init(super, title, message, buttons)
+function Alert:init(super, title, message, buttons, extraLines)
   super.init()
   self.title = title or _T('alert_title')
   self.message = message or _T('alert_message')
   self.buttons = buttons or 0
+  self.extraLines = extraLines or 0
 end
 
 function Alert:onLoad()
-  local buttons = Row()
+  local buttons = Row():size(nil, 1)
 
   if self.buttons & Alert.Ok == Alert.Ok then
     buttons:addSubview(Button(_T('ok')):action('clickedOk'))
@@ -41,7 +42,7 @@ function Alert:onLoad()
     buttons
   }))
 
-  self.preferredSize = { w = 50, h = 7 }
+  self.preferredSize = { w = 50, h = 7 + self.extraLines }
 end
 
 function Alert:clickedOk()

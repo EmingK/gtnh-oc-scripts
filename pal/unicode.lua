@@ -33,6 +33,14 @@ return {
 
   -- unicode.sub(value: string, i:number[, j:number]): string
   -- UTF-8 aware version of string.sub.
+  sub = function (s, i, j)
+    i = utf8.offset(s, i)
+    if not j then j = -1 end
+    if j > 0 then
+      j = utf8.offset(s, j + 1) - 1
+    end
+    return string.sub(s, i, j)
+  end,
 
   -- unicode.upper(value: string): string
   -- UTF-8 aware version of string.upper.
