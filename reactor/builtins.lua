@@ -37,6 +37,41 @@ function builtins.setup()
       layout = {
         'A'
       }
+    },
+    {
+      name = 'builtin.sunnarium',
+      displayName = _T('schema_name_sunnarium'),
+      size = {
+        w = 9,
+        h = 6,
+      },
+      count = 54,
+      layout = {
+        'B', 'A', 'C', 'D', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'C', 'D', 'D', 'D', 'D', 'D',
+        'C', 'A', 'B', 'A', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'C', 'D', 'D', 'D', 'D', 'D',
+        'B', 'A', 'C', 'A', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'B', 'D', 'D', 'D', 'D', 'D',
+      }
+    },
+    {
+      name = 'builtin.sunnarium_temp_control',
+      displayName = _T('schema_name_sunnarium_temp_control'),
+      size = {
+        w = 9,
+        h = 6,
+      },
+      count = 54,
+      layout = {
+        'A',
+        [4]='D',[5]='D',[6]='D',[7]='D',[8]='D',[9]='D',
+        [14]='D',[15]='D',[16]='D',[17]='D',[18]='D',
+        [23]='D',[24]='D',[25]='D',[26]='D',[27]='D',
+        [32]='D',[33]='D',[34]='D',[35]='D',[36]='D',
+        [41]='D',[42]='D',[43]='D',[44]='D',[45]='D',
+        [50]='D',[51]='D',[52]='D',[53]='D',[54]='D',
+      }
     }
   }
 

@@ -154,6 +154,8 @@ return {
   schema = '元件布局',
   schema_config = '编辑布局',
   schema_name_single = '单个元件',
+  schema_name_sunnarium = '阳光化合物',
+  schema_name_sunnarium_temp_control = '阳光化合物（温控）',
   schema_name_vacuum = '强冷',
   select_schema = '选择布局',
   silver = '银色',

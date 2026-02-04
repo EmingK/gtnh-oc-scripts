@@ -154,6 +154,8 @@ return {
   schema = 'Schema',
   schema_config = 'Edit schema',
   schema_name_single = 'Single item',
+  schema_name_sunnarium = 'Sunnarium',
+  schema_name_sunnarium_temp_control = 'Sunnarium (temp control)',
   schema_name_vacuum = 'Vacuum',
   select_schema = 'Select a schema',
   silver = 'Silver',
