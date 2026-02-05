@@ -31,6 +31,9 @@ local function configSave()
 end
 
 local function instantiateControl(cfg, rc)
+  if not cfg then
+    error(_T('no_control_config'))
+  end
   if cfg.mode == 'adapter' then
     return reactorControl.Adapter:new(rc)
   elseif cfg.mode == 'vanilla' then
@@ -97,10 +100,13 @@ local function configInstantiate(cfg)
     local profile = {}
     profile.count = schema.count
     local layout = {}
+    local totalHeatCapacity = 10000
     for i, id in pairs(schema.layout) do
       layout[i] = instantiateItem(v.item[id])
+      totalHeatCapacity = totalHeatCapacity + builtins.getHeatCapacity(layout[i].name)
     end
     profile.layout = layout
+    profile.totalHeatCapacity = totalHeatCapacity
 
     profiles[k] = profile
   end

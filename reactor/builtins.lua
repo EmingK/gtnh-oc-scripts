@@ -37,6 +37,41 @@ function builtins.setup()
       layout = {
         'A'
       }
+    },
+    {
+      name = 'builtin.sunnarium',
+      displayName = _T('schema_name_sunnarium'),
+      size = {
+        w = 9,
+        h = 6,
+      },
+      count = 54,
+      layout = {
+        'B', 'A', 'C', 'D', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'C', 'D', 'D', 'D', 'D', 'D',
+        'C', 'A', 'B', 'A', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'C', 'D', 'D', 'D', 'D', 'D',
+        'B', 'A', 'C', 'A', 'D', 'D', 'D', 'D', 'D',
+        'A', 'C', 'A', 'B', 'D', 'D', 'D', 'D', 'D',
+      }
+    },
+    {
+      name = 'builtin.sunnarium_temp_control',
+      displayName = _T('schema_name_sunnarium_temp_control'),
+      size = {
+        w = 9,
+        h = 6,
+      },
+      count = 54,
+      layout = {
+        'A',
+        [4]='D',[5]='D',[6]='D',[7]='D',[8]='D',[9]='D',
+        [14]='D',[15]='D',[16]='D',[17]='D',[18]='D',
+        [23]='D',[24]='D',[25]='D',[26]='D',[27]='D',
+        [32]='D',[33]='D',[34]='D',[35]='D',[36]='D',
+        [41]='D',[42]='D',[43]='D',[44]='D',[45]='D',
+        [50]='D',[51]='D',[52]='D',[53]='D',[54]='D',
+      }
     }
   }
 
@@ -84,7 +119,14 @@ function builtins.setup()
     { id = 'gregtech:gt.540k_Space_Coolantcell', reusable = false, },
     { id = 'gregtech:gt.1080k_Space_Coolantcell', reusable = false, },
     { id = 'gregtech:gt.neutroniumHeatCapacitor', reusable = false, },
+    { id = 'IC2:reactorVent', reusable = true, },
     { id = 'IC2:reactorVentCore', reusable = true, },
+    { id = 'IC2:reactorVentDiamond', reusable = true, },
+    { id = 'IC2:reactorVentGold', reusable = true, },
+    { id = 'IC2:reactorVentSpread', reusable = true, },
+    { id = 'IC2:reactorPlating', reusable = true, heatCapacity = 1000, },
+    { id = 'IC2:reactorPlatingExplosive', reusable = true, heatCapacity = 500, },
+    { id = 'IC2:reactorPlatingHeat', reusable = true, heatCapacity = 2000, }, -- Wiki says it was 1700. Tested to be 2000 (also from decompiled code).
   }
 
   local reuseableItems = {}
@@ -92,8 +134,19 @@ function builtins.setup()
     reuseableItems[itemInfo.id] = itemInfo.reusable
   end
 
+  local heatCapacityMapping = {}
+  for _, itemInfo in ipairs(items) do
+    if itemInfo.heatCapacity then
+      heatCapacityMapping[itemInfo.id] = itemInfo.heatCapacity
+    end
+  end
+
   local function isReusable(item)
     return reuseableItems[item] == true
+  end
+
+  local function getHeatCapacity(item)
+    return heatCapacityMapping[item] or 0
   end
 
   local checks = {
@@ -114,6 +167,7 @@ function builtins.setup()
   builtins.items = items
   builtins.isReusable = isReusable
   builtins.check = checks
+  builtins.getHeatCapacity = getHeatCapacity
 end
 
 return builtins

@@ -11,6 +11,7 @@ local UIElement = require('ui.element').class
 local utils = require('ui.utils')
 
 local term = palRequire('term')
+local text = palRequire('text')
 
 local Label = class(UIElement)
 
@@ -24,9 +25,12 @@ function Label:draw(gpu)
     utils.setHighlight(gpu)
   end
   self:clear(gpu)
-  -- TODO: support line wrapping
+
   local x, y = self:screenPos(0, 0)
-  gpu.set(x, y, self.text)
+  for line in text.wrappedLines(self.text, self.rect.w, self.rect.w) do
+    gpu.set(x, y, line)
+    y = y + 1
+  end
 
   if self.selected then
     utils.setNormal(gpu)
