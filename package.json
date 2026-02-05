@@ -1,5 +1,5 @@
 {
-  "name": "gtnh-reactor-oc",
+  "name": "gtnh-oc-scripts",
   "version": "0.3.0",
   "description": "OpenComputer reactor control for GT:NH",
   "type": "module",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EmingK/gtnh-reactor-oc.git"
+    "url": "git+https://github.com/EmingK/gtnh-oc-scripts.git"
   },
   "author": "EmingK <EMKCentric@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EmingK/gtnh-reactor-oc/issues"
+    "url": "https://github.com/EmingK/gtnh-oc-scripts/issues"
   },
-  "homepage": "https://github.com/EmingK/gtnh-reactor-oc#readme",
+  "homepage": "https://github.com/EmingK/gtnh-oc-scripts#readme",
   "devDependencies": {
     "@types/node": "^22.7.5",
     "fs-extra": "^11.2.0",
